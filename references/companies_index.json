@@ -1,0 +1,632 @@
+[
+  {
+    "name": "ASML - ASML Holding",
+    "status": "Watchlist",
+    "conviction": "High 🔥🔥🔥",
+    "id": "3ca0abc4-4cc7-8174-b4b5-f6b0693ab1b8",
+    "blocks": 22,
+    "chars": 3459,
+    "file": "STOCK_ASML - ASML Holding.md"
+  },
+  {
+    "name": "ADBE - Adobe",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-81d4-ad10-c87072a1fb7e",
+    "blocks": 23,
+    "chars": 4634,
+    "file": "STOCK_ADBE - Adobe.md"
+  },
+  {
+    "name": "BA.L — BAE Systems",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3cc0abc4-4cc7-8140-a3e9-e038f06e8b7c",
+    "blocks": 28,
+    "chars": 6920,
+    "file": "STOCK_BA.L _ BAE Systems.md"
+  },
+  {
+    "name": "CATL — Contemporary Amperex (300750.SZ / 3750.HK)",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cc0abc4-4cc7-81e9-9999-ccc212f981c4",
+    "blocks": 28,
+    "chars": 9013,
+    "file": "STOCK_CATL _ Contemporary Amperex _300750.SZ _ 3750.HK_.md"
+  },
+  {
+    "name": "CRWD - CrowdStrike",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-8188-8214-ca390793419e",
+    "blocks": 22,
+    "chars": 4107,
+    "file": "STOCK_CRWD - CrowdStrike.md"
+  },
+  {
+    "name": "DELL — Dell Technologies",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cc0abc4-4cc7-81d8-8bf4-e06f339d06d0",
+    "blocks": 26,
+    "chars": 7192,
+    "file": "STOCK_DELL _ Dell Technologies.md"
+  },
+  {
+    "name": "DELTA - Delta Electronics Thailand",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-81f3-a912-db19295e68d4",
+    "blocks": 21,
+    "chars": 4316,
+    "file": "STOCK_DELTA - Delta Electronics Thailand.md"
+  },
+  {
+    "name": "DIS - Walt Disney",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-816e-b76c-f9a1c5736c80",
+    "blocks": 23,
+    "chars": 3865,
+    "file": "STOCK_DIS - Walt Disney.md"
+  },
+  {
+    "name": "ETN — Eaton Corporation",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cc0abc4-4cc7-81e9-a485-f83c2ef96998",
+    "blocks": 23,
+    "chars": 6356,
+    "file": "STOCK_ETN _ Eaton Corporation.md"
+  },
+  {
+    "name": "FCX — Freeport-McMoRan",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3cc0abc4-4cc7-8179-9fd4-cd8363237e76",
+    "blocks": 23,
+    "chars": 4900,
+    "file": "STOCK_FCX _ Freeport-McMoRan.md"
+  },
+  {
+    "name": "GD — General Dynamics",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cc0abc4-4cc7-8116-8c23-c4cdf2e23860",
+    "blocks": 26,
+    "chars": 6802,
+    "file": "STOCK_GD _ General Dynamics.md"
+  },
+  {
+    "name": "HANA - Hana Microelectronics",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-8104-871c-d3e482a49d14",
+    "blocks": 24,
+    "chars": 4937,
+    "file": "STOCK_HANA - Hana Microelectronics.md"
+  },
+  {
+    "name": "HII — Huntington Ingalls",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cc0abc4-4cc7-810c-8d00-c45fad04a505",
+    "blocks": 28,
+    "chars": 7299,
+    "file": "STOCK_HII _ Huntington Ingalls.md"
+  },
+  {
+    "name": "HO.PA — Thales",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cc0abc4-4cc7-81e3-8440-dd28c116dad4",
+    "blocks": 31,
+    "chars": 7386,
+    "file": "STOCK_HO.PA _ Thales.md"
+  },
+  {
+    "name": "IONQ - IonQ",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-8160-9f4c-ccda0df16aca",
+    "blocks": 22,
+    "chars": 4058,
+    "file": "STOCK_IONQ - IonQ.md"
+  },
+  {
+    "name": "KCE - KCE Electronics",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-8190-bbbb-e64c9ae69957",
+    "blocks": 22,
+    "chars": 4917,
+    "file": "STOCK_KCE - KCE Electronics.md"
+  },
+  {
+    "name": "LDO.MI — Leonardo",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cc0abc4-4cc7-81d5-bad5-d6582721c945",
+    "blocks": 26,
+    "chars": 6840,
+    "file": "STOCK_LDO.MI _ Leonardo.md"
+  },
+  {
+    "name": "LI - Li Auto",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-8174-9043-ed371a7a6fbc",
+    "blocks": 22,
+    "chars": 4047,
+    "file": "STOCK_LI - Li Auto.md"
+  },
+  {
+    "name": "LLY - Eli Lilly",
+    "status": "Researching",
+    "conviction": "High 🔥🔥🔥",
+    "id": "3ca0abc4-4cc7-81c8-83c0-d79905ffe463",
+    "blocks": 23,
+    "chars": 4144,
+    "file": "STOCK_LLY - Eli Lilly.md"
+  },
+  {
+    "name": "MRVL - Marvell Technology",
+    "status": "Researching",
+    "conviction": "High 🔥🔥🔥",
+    "id": "3ca0abc4-4cc7-81a2-a1a5-d22e1990f6d3",
+    "blocks": 21,
+    "chars": 3386,
+    "file": "STOCK_MRVL - Marvell Technology.md"
+  },
+  {
+    "name": "MSFT - Microsoft",
+    "status": "Researching",
+    "conviction": "High 🔥🔥🔥",
+    "id": "3ca0abc4-4cc7-81ca-87be-f3a8a4c530d4",
+    "blocks": 23,
+    "chars": 4215,
+    "file": "STOCK_MSFT - Microsoft.md"
+  },
+  {
+    "name": "MSTR - Strategy (MicroStrategy)",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-81a7-acfb-e6d47b486b7a",
+    "blocks": 25,
+    "chars": 5337,
+    "file": "STOCK_MSTR - Strategy _MicroStrategy_.md"
+  },
+  {
+    "name": "NFLX - Netflix",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-8110-920a-dac959d0402a",
+    "blocks": 22,
+    "chars": 3491,
+    "file": "STOCK_NFLX - Netflix.md"
+  },
+  {
+    "name": "NOC — Northrop Grumman",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cc0abc4-4cc7-8100-a0d6-ef4912cc5539",
+    "blocks": 26,
+    "chars": 5959,
+    "file": "STOCK_NOC _ Northrop Grumman.md"
+  },
+  {
+    "name": "NOW - ServiceNow",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-8115-af1a-cd4546cbffa4",
+    "blocks": 23,
+    "chars": 4686,
+    "file": "STOCK_NOW - ServiceNow.md"
+  },
+  {
+    "name": "NTES — NetEase",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cc0abc4-4cc7-81ab-9f75-c01d7353c659",
+    "blocks": 28,
+    "chars": 8845,
+    "file": "STOCK_NTES _ NetEase.md"
+  },
+  {
+    "name": "NVO - Novo Nordisk",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-81c8-92d6-e45db2f46705",
+    "blocks": 23,
+    "chars": 4702,
+    "file": "STOCK_NVO - Novo Nordisk.md"
+  },
+  {
+    "name": "PLTR - Palantir Technologies",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-81ea-b2ad-e793b7bfe6d1",
+    "blocks": 21,
+    "chars": 3830,
+    "file": "STOCK_PLTR - Palantir Technologies.md"
+  },
+  {
+    "name": "PWR — Quanta Services",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cc0abc4-4cc7-8195-800c-d433332b622f",
+    "blocks": 23,
+    "chars": 6335,
+    "file": "STOCK_PWR _ Quanta Services.md"
+  },
+  {
+    "name": "PYPL - PayPal Holdings",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-81c7-9939-de17bb8006a0",
+    "blocks": 21,
+    "chars": 3228,
+    "file": "STOCK_PYPL - PayPal Holdings.md"
+  },
+  {
+    "name": "RKLB - Rocket Lab",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-8134-973a-d2f67af66cb7",
+    "blocks": 22,
+    "chars": 4225,
+    "file": "STOCK_RKLB - Rocket Lab.md"
+  },
+  {
+    "name": "RTX - RTX Corporation",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-81f0-a078-edf4d22f3fca",
+    "blocks": 22,
+    "chars": 3954,
+    "file": "STOCK_RTX - RTX Corporation.md"
+  },
+  {
+    "name": "Samsung Electronics (005930.KS)",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cc0abc4-4cc7-818c-9386-cedda51b1a85",
+    "blocks": 27,
+    "chars": 7822,
+    "file": "STOCK_Samsung Electronics _005930.KS_.md"
+  },
+  {
+    "name": "SCCO — Southern Copper",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3cc0abc4-4cc7-814d-a9b0-c8db7baa9fdb",
+    "blocks": 23,
+    "chars": 5288,
+    "file": "STOCK_SCCO _ Southern Copper.md"
+  },
+  {
+    "name": "SK hynix (000660.KS)",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cc0abc4-4cc7-816e-b72d-cbd1e0f890bf",
+    "blocks": 26,
+    "chars": 7318,
+    "file": "STOCK_SK hynix _000660.KS_.md"
+  },
+  {
+    "name": "TSLA - Tesla",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-81ad-b5e3-e8c549cddf64",
+    "blocks": 23,
+    "chars": 3812,
+    "file": "STOCK_TSLA - Tesla.md"
+  },
+  {
+    "name": "TTWO - Take-Two Interactive",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-8107-9ac1-d76464fffff6",
+    "blocks": 23,
+    "chars": 4041,
+    "file": "STOCK_TTWO - Take-Two Interactive.md"
+  },
+  {
+    "name": "XYL - Xylem",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-81e5-9090-ff91b56595b8",
+    "blocks": 21,
+    "chars": 3610,
+    "file": "STOCK_XYL - Xylem.md"
+  },
+  {
+    "name": "AVGO - Broadcom",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-819d-8857-c35cb2867393",
+    "blocks": 187,
+    "chars": 29565,
+    "file": "STOCK_AVGO - Broadcom.md"
+  },
+  {
+    "name": "VRT - Vertiv Holdings",
+    "status": "Validation",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-81a4-946e-dc3785155097",
+    "blocks": 23,
+    "chars": 3812,
+    "file": "STOCK_VRT - Vertiv Holdings.md"
+  },
+  {
+    "name": "CEG - Constellation Energy",
+    "status": "Holding",
+    "conviction": "High 🔥🔥🔥",
+    "id": "3ca0abc4-4cc7-81b8-b738-f7e344649b7f",
+    "blocks": 119,
+    "chars": 27276,
+    "file": "STOCK_CEG - Constellation Energy.md"
+  },
+  {
+    "name": "LMT — Lockheed Martin",
+    "status": "Researching",
+    "conviction": "High 🔥🔥🔥",
+    "id": "3cc0abc4-4cc7-8198-a359-d6e27cf563e2",
+    "blocks": 24,
+    "chars": 5575,
+    "file": "STOCK_LMT _ Lockheed Martin.md"
+  },
+  {
+    "name": "LHX — L3Harris Technologies",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cc0abc4-4cc7-81db-8477-db5106b33478",
+    "blocks": 26,
+    "chars": 6343,
+    "file": "STOCK_LHX _ L3Harris Technologies.md"
+  },
+  {
+    "name": "AAPL - Apple",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-8116-a109-f3623d0cae34",
+    "blocks": 23,
+    "chars": 3831,
+    "file": "STOCK_AAPL - Apple.md"
+  },
+  {
+    "name": "NVDA - Nvidia",
+    "status": "Researching",
+    "conviction": "High 🔥🔥🔥",
+    "id": "3ca0abc4-4cc7-816d-bd9c-ee2fdeb3105a",
+    "blocks": 25,
+    "chars": 4290,
+    "file": "STOCK_NVDA - Nvidia.md"
+  },
+  {
+    "name": "Shopify (SHOP)",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cc0abc4-4cc7-80ec-bc98-c09161d3747b",
+    "blocks": 112,
+    "chars": 7834,
+    "file": "STOCK_Shopify _SHOP_.md"
+  },
+  {
+    "name": "0700.HK - Tencent",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cb0abc4-4cc7-81f8-975d-d90a7a267c93",
+    "blocks": 35,
+    "chars": 5058,
+    "file": "STOCK_0700.HK - Tencent.md"
+  },
+  {
+    "name": "VST — Vistra Corp",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cc0abc4-4cc7-8111-bf31-fcde19a05123",
+    "blocks": 24,
+    "chars": 6735,
+    "file": "STOCK_VST _ Vistra Corp.md"
+  },
+  {
+    "name": "COIN - Coinbase",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-81f9-af14-e67388d93c7b",
+    "blocks": 72,
+    "chars": 11543,
+    "file": "STOCK_COIN - Coinbase.md"
+  },
+  {
+    "name": "CRCL (Circle Internet Group) Stock Analysis — Aug 2026",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cb0abc4-4cc7-81eb-9dac-c1f9bb1beaf6",
+    "blocks": 106,
+    "chars": 9555,
+    "file": "STOCK_CRCL _Circle Internet Group_ Stock Analysis _ Aug 2026.md"
+  },
+  {
+    "name": "PDD - PDD Holdings",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3cb0abc4-4cc7-819e-a3b7-d415aaadf4e4",
+    "blocks": 35,
+    "chars": 5292,
+    "file": "STOCK_PDD - PDD Holdings.md"
+  },
+  {
+    "name": "BABA - Alibaba",
+    "status": "🚫 Passed",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-81dd-8f13-dc08e9993aea",
+    "blocks": 27,
+    "chars": 6656,
+    "file": "STOCK_BABA - Alibaba.md"
+  },
+  {
+    "name": "MU - Micron Technology",
+    "status": "🚫 Passed",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-8153-981f-e14b4eacc541",
+    "blocks": 71,
+    "chars": 10043,
+    "file": "STOCK_MU - Micron Technology.md"
+  },
+  {
+    "name": "EQIX - Equinix",
+    "status": "🚫 Passed",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-815c-bddc-db835aa2c5d1",
+    "blocks": 48,
+    "chars": 6800,
+    "file": "STOCK_EQIX - Equinix.md"
+  },
+  {
+    "name": "AMBA - Ambarella",
+    "status": "🚫 Passed",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-81a3-9576-dcf2421ff014",
+    "blocks": 23,
+    "chars": 4783,
+    "file": "STOCK_AMBA - Ambarella.md"
+  },
+  {
+    "name": "ISRG - Intuitive Surgical",
+    "status": "🚫 Passed",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-8182-8c80-d5512f301f6c",
+    "blocks": 108,
+    "chars": 21707,
+    "file": "STOCK_ISRG - Intuitive Surgical.md"
+  },
+  {
+    "name": "TSM - Taiwan Semiconductor",
+    "status": "Watchlist",
+    "conviction": "High 🔥🔥🔥",
+    "id": "3ca0abc4-4cc7-815a-b017-ec0c956d4895",
+    "blocks": 26,
+    "chars": 4099,
+    "file": "STOCK_TSM - Taiwan Semiconductor.md"
+  },
+  {
+    "name": "NVT - nVent Electric",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-8118-806a-da61cea1ae3e",
+    "blocks": 23,
+    "chars": 4479,
+    "file": "STOCK_NVT - nVent Electric.md"
+  },
+  {
+    "name": "BESI - BE Semiconductor Industries",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-8105-b9f0-d0aa850b3cd9",
+    "blocks": 24,
+    "chars": 5254,
+    "file": "STOCK_BESI - BE Semiconductor Industries.md"
+  },
+  {
+    "name": "AMD - Advanced Micro Devices",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3d60abc4-4cc7-8104-acc5-d1c891ce23cc",
+    "blocks": 153,
+    "chars": 26205,
+    "file": "STOCK_AMD - Advanced Micro Devices.md"
+  },
+  {
+    "name": "QCOM (Qualcomm) Stock Analysis — Aug 2026",
+    "status": "Holding",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-81ed-ade0-e23cce38a904",
+    "blocks": 59,
+    "chars": 38453,
+    "file": "STOCK_QCOM _Qualcomm_ Stock Analysis _ Aug 2026.md"
+  },
+  {
+    "name": "META (Meta Platforms) Stock Analysis — Aug 2026",
+    "status": "Holding",
+    "conviction": "High 🔥🔥🔥",
+    "id": "3ca0abc4-4cc7-8112-aaab-c51833c22316",
+    "blocks": 41,
+    "chars": 47379,
+    "file": "STOCK_META _Meta Platforms_ Stock Analysis _ Aug 2026.md"
+  },
+  {
+    "name": "AMZN (Amazon) Stock Analysis — Aug 2026",
+    "status": "Holding",
+    "conviction": "High 🔥🔥🔥",
+    "id": "3ca0abc4-4cc7-81a1-8176-d593b19f5246",
+    "blocks": 41,
+    "chars": 48940,
+    "file": "STOCK_AMZN _Amazon_ Stock Analysis _ Aug 2026.md"
+  },
+  {
+    "name": "GOOGL (Alphabet) Stock Analysis — Aug 2026",
+    "status": "Watchlist",
+    "conviction": "High 🔥🔥🔥",
+    "id": "3ca0abc4-4cc7-810e-be87-dc2a27134f9f",
+    "blocks": 42,
+    "chars": 35761,
+    "file": "STOCK_GOOGL _Alphabet_ Stock Analysis _ Aug 2026.md"
+  },
+  {
+    "name": "JPM - JPMorgan Chase",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-81c2-a2da-c40aab865666",
+    "blocks": 22,
+    "chars": 3820,
+    "file": "STOCK_JPM - JPMorgan Chase.md"
+  },
+  {
+    "name": "PANW - Palo Alto Networks",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-8132-a0a5-f95c6fa4d8c4",
+    "blocks": 22,
+    "chars": 3980,
+    "file": "STOCK_PANW - Palo Alto Networks.md"
+  },
+  {
+    "name": "COST - Costco Wholesale",
+    "status": "Researching",
+    "conviction": "Medium 🔥🔥",
+    "id": "3ca0abc4-4cc7-81ab-97c3-ee9c7d88ca37",
+    "blocks": 21,
+    "chars": 3569,
+    "file": "STOCK_COST - Costco Wholesale.md"
+  },
+  {
+    "name": "IREN - IREN Limited",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-81ef-941c-d1f669ffd0d4",
+    "blocks": 21,
+    "chars": 3864,
+    "file": "STOCK_IREN - IREN Limited.md"
+  },
+  {
+    "name": "OKLO - Oklo",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-8102-a31c-cc35e4da836a",
+    "blocks": 21,
+    "chars": 4006,
+    "file": "STOCK_OKLO - Oklo.md"
+  },
+  {
+    "name": "SPCX - SpaceX",
+    "status": "Researching",
+    "conviction": "Low 🔥",
+    "id": "3ca0abc4-4cc7-8138-b75a-f630410d8405",
+    "blocks": 21,
+    "chars": 4559,
+    "file": "STOCK_SPCX - SpaceX.md"
+  }
+]
