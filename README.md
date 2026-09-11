@@ -75,6 +75,100 @@ investment-research/
 
 ---
 
+## Multi-Agent Architecture & DAG Sequencing
+
+The system models a Tier-1 multi-agent DAG pipeline orchestrated across 8 sequential and parallel phases, enforcing strict quality gates and air-gap adversarial isolation:
+
+```mermaid
+flowchart TD
+    %% Styling and Node Classes
+    classDef startNode fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#f8fafc;
+    classDef dataNode fill:#1e293b,stroke:#0ea5e9,stroke-width:2px,color:#f8fafc;
+    classDef auditNode fill:#312e81,stroke:#818cf8,stroke-width:2px,color:#f8fafc;
+    classDef valNode fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#f8fafc;
+    classDef codeHook fill:#065f46,stroke:#34d399,stroke-dasharray: 4 4,stroke-width:2px,color:#ecfdf5;
+    classDef debateNode fill:#7c2d12,stroke:#f97316,stroke-width:2px,color:#f8fafc;
+    classDef redTeam fill:#881337,stroke:#f43f5e,stroke-width:2px,color:#f8fafc;
+    classDef synthNode fill:#134e4a,stroke:#14b8a6,stroke-width:2px,color:#f8fafc;
+    classDef icNode fill:#4a044e,stroke:#d946ef,stroke-width:2px,color:#f8fafc;
+    classDef gateNode fill:#991b1b,stroke:#ef4444,stroke-width:2px,color:#ffffff;
+    classDef pubNode fill:#1e3a8a,stroke:#60a5fa,stroke-width:2px,color:#f8fafc;
+
+    subgraph P0 ["Phase 0: Sourcing & Mandate"]
+        START([Investor / Trigger Request]):::startNode --> SCREENER["🔍 Screener Agent<br/>(Candidate Universe & GARP Filters)"]:::startNode
+    end
+
+    subgraph P1 ["Phase 1: Parallel Data Retrieval (Strict No-Judgment)"]
+        SCREENER --> MD["📊 Market Data Agent<br/>(Live Quotes, Capital Structure, Multiples)"]:::dataNode
+        SCREENER --> FILINGS["📑 Filings Agent<br/>(SEC 10-K, 10-Q, 8-K Disclosures)"]:::dataNode
+        SCREENER --> NEWS["📰 News & Catalyst Agent<br/>(Transcripts, Timelines, Channel Checks)"]:::dataNode
+    end
+
+    MD & FILINGS & NEWS --> G1{"🛡️ Gate G1<br/>Data Integrity Check"}:::gateNode
+
+    subgraph P2 ["Phase 2: Top-Down Thematic & Forensic Audit"]
+        G1 -->|Pass| MACRO["🌍 Macro & Thematic Strategist<br/>(5 Master Theses Alignment)"]:::auditNode
+        G1 -->|Pass| FORENSIC["🕵️ Forensic Accounting Auditor<br/>(Beneish M-Score & Sloan Accruals)"]:::auditNode
+    end
+
+    FORENSIC --> G2{"🛡️ Gate G2<br/>Forensic Accounting Check<br/>(M < -1.78 & Accruals < +10%)"}:::gateNode
+
+    subgraph P3 ["Phase 3: Sector Deep Dive & Deterministic Valuation"]
+        G2 -->|Pass| SECTOR["🏭 Sector Specialist<br/>(Unit Economics, Moat, Porter's 5)"]:::valNode
+        G2 -->|Pass| MOAT["🏰 Moat & Business Quality<br/>(ROIC/WACC Spread, Pricing Power)"]:::valNode
+        MACRO --> SECTOR
+        MACRO --> MOAT
+        G2 -->|Pass| QUANT["🧮 Quant Valuation Modeler<br/>(DCF, Reverse DCF, SOTP)"]:::valNode
+        QUANT -.-> CALC[["⚙️ pipeline/calculator.mjs<br/>(Deterministic Code Arithmetic)"]]:::codeHook
+        CALC -.-> QUANT
+    end
+
+    QUANT --> G3{"🛡️ Gate G3<br/>Valuation Integrity Check<br/>(Sensitivity Matches Base to Cent)"}:::gateNode
+
+    subgraph P4 ["Phase 4: Adversarial Debate & Stress Testing (Isolated Red Team)"]
+        G3 -->|Pass| BULL["🐂 Bull Case Agent<br/>(Secular Tailwinds, Upside Optionality)"]:::debateNode
+        G3 -->|Pass| BEAR["🐻 Adversarial Bear Red Team<br/>(Short-Seller Attack, Downside Floor)"]:::redTeam
+        G3 -->|Pass| REG["⚖️ Regulatory & Geopolitical<br/>(Antitrust, Export Controls, Sovereign)"]:::debateNode
+        G3 -->|Pass| RISK["📉 Chief Risk Officer<br/>(Max Drawdown, Net Debt <= 4.0x)"]:::debateNode
+    end
+
+    BULL -.-x|AIR-GAP ISOLATION: No Output Sharing| BEAR
+
+    BULL & BEAR --> G4{"🛡️ Gate G4<br/>3:1 Asymmetry Check<br/>(Reward-to-Risk >= 3.0x)"}:::gateNode
+    REG & RISK --> G5{"🛡️ Gate G5<br/>Risk & Leverage Ceilings"}:::gateNode
+
+    subgraph P5 ["Phase 5: Synthesis & Primary Citation Audit"]
+        G4 & G5 -->|Pass| WRITER["📝 Thesis Writer Agent<br/>(8-Section Institutional Memo)"]:::synthNode
+        WRITER --> VERIFIER["🔍 Verifier Agent<br/>(100% Primary Source Footnote Audit)"]:::synthNode
+    end
+
+    VERIFIER --> G6{"🛡️ Gate G6<br/>Citation & Proof Audit"}:::gateNode
+
+    subgraph P6 ["Phase 6: Deliberation & Human Allocation"]
+        G6 -->|Pass| CIO["🏛️ Chief Investment Officer / IC<br/>(Passing Discipline, Final Veto)"]:::icNode
+        CIO --> G_IC{"🛡️ IC Verdict Gate<br/>(APPROVED_LONG / WATCH / PASS)"}:::gateNode
+        G_IC -->|Approved| G_HUMAN{"👤 Human Gate<br/>(Investor Sizing Confirmation)"}:::gateNode
+    end
+
+    subgraph P7 ["Phase 7: Institutional Publishing & Continuous Monitoring"]
+        G_HUMAN -->|Confirmed| PUB["📤 Publisher Agent<br/>(pipeline/exporter.py)"]:::pubNode
+        PUB --> DOCX[("📄 RESEARCH.docx<br/>Wall Street Memo")]:::pubNode
+        PUB --> XLSX[("📊 QUANT_ANALYSIS.xlsx<br/>6-Tab Financial Model")]:::pubNode
+        PUB --> MD_MEMO[("📝 RESEARCH.md<br/>Executive Brief")]:::pubNode
+        PUB --> MONITOR["📡 Monitor Agent<br/>(Earnings Watch & Invalidation Tracker)"]:::pubNode
+        MONITOR -.->|Re-enters on Invalidation Event| MD
+    end
+
+    %% Loop-back on Gate Failures
+    G1 -.->|Fail: Incomplete Data| MD
+    G2 -.->|Fail: Fraud Alert Reject| FORENSIC
+    G3 -.->|Fail: Math Discrepancy| QUANT
+    G4 -.->|Fail: Asymmetry < 3:1 VETO| CIO
+    G6 -.->|Fail: Uncited Statement| WRITER
+```
+
+---
+
 ## Core Institutional Architectural Principles
 
 1. **Strict Separation of Retrieval and Judgment**:
