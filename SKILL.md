@@ -23,7 +23,7 @@ It rejects retail momentum fads, separates raw data retrieval from analytical ju
    - Missing metrics trigger formal `DataRequest` objects back to data agents; hallucination from memory is strictly forbidden.
 3. **Deterministic Financial Modeling in Code (`pipeline/calculator.mjs`)**:
    - LLMs are notoriously error-prone at financial math. The valuation agent authors **assumptions only** (growth rates, discount rates/WACC, margin curves, share counts).
-   - All financial math—multi-stage DCF, Capex trajectories, Reverse DCF market-implied growth rate solvers, Sum-of-the-Parts (SOTP), Graham Numbers, Beneish M-Scores, and 2D Sensitivity Matrices—is computed deterministically by `pipeline/calculator.mjs`. Gate G3 verifies exact mathematical reproducibility.
+   - All financial math—multi-stage DCF, Capex trajectories, Reverse DCF market-implied growth rate solvers, Sum-of-the-Parts (SOTP), Monte Carlo Simulations (1,000 runs via Box-Muller), LBO (Leveraged Buyout) modeling, Graham Numbers, Beneish M-Scores, and 2D Sensitivity Matrices—is computed deterministically by `pipeline/calculator.mjs`. Gate G3 verifies exact mathematical reproducibility.
 4. **The 3:1 Asymmetric Reward-to-Risk Hurdle**:
    - Long positions (`APPROVED_LONG`) are approved only when the upside to Base Fair Value outweighs the downside to Bear Floor by at least **3.0 to 1**:
      $$\text{Reward-to-Risk Ratio} = \frac{\text{Base DCF Fair Value} - \text{Current Price}}{\text{Current Price} - \text{Bear DCF Fair Value}} \ge 3.0$$
@@ -38,7 +38,7 @@ It rejects retail momentum fads, separates raw data retrieval from analytical ju
    - The Bear agent operates like an activist short-seller (Hindenburg / Muddy Waters). It must formulate at least 4 falsifiable, thesis-breaking vectors and at least 2 quantitative "Kill Criteria".
    - Bull and Bear agents run in strict isolation to prevent softening of arguments.
 7. **Forensic Accounting & Earnings Quality Audit**:
-   - Every target is audited via the 8-factor Beneish M-Score ($M \le -1.78$ threshold), Sloan Accrual Ratio, Stock-Based Compensation (SBC) real economic dilution walk, and working capital checks.
+   - Every target is audited via the 8-factor Beneish M-Score ($M \le -1.78$ threshold), Sloan Accrual Ratio, Stock-Based Compensation (SBC) real economic dilution walk, working capital checks, and a comprehensive ESG & Corporate Governance audit (Insider Trading, Board Independence, Debt Maturity Walls).
 8. **Fact Verification Gate (G6)**:
    - Zero unsourced numbers permitted. Every data point must trace to primary SEC filings, audited reports, or verifiable transcripts.
 9. **Exclusive Desktop Workspace & Dual Institutional Deliverables (Mandatory)**:
@@ -73,10 +73,10 @@ It rejects retail momentum fads, separates raw data retrieval from analytical ju
      ┌───────────────────────────────────┼───────────────────────────────────┐
      │                                   │                                   │
 ┌────┴───────────────────────────┐ ┌─────┴─────────────────────────────┐ ┌───┴─────────────────────────┐
-│ Macro & Thematic Strategist    │ │ Sector Specialist (6 Verticals)   │ │ Forensic Accounting Auditor   │
-│ - 5 Master Theses Mapping      │ │ - Compute, Power, Cloud, Fintech, │ │ - Beneish M-Score (-1.78)     │
-│ - Value Chain Bottlenecks      │ │   Robotics, Defense GARP          │ │ - Sloan Accruals (+-10%)      │
-│ - Capex & Power Resource Grids │ │ - BOM Deflation, Backlog Durability│ │ - SBC Economic Dilution Walk  │
+│ Macro & Thematic Strategist    │ │ Sector Specialist (6 Verticals)   │ │ Forensic & ESG Auditor        │
+│ - 5 Master Theses Mapping      │ │ - Compute, Power, Cloud, Fintech, │ │ - Beneish M-Score / Sloan     │
+│ - Value Chain Bottlenecks      │ │   Robotics, Defense GARP          │ │ - SBC Economic Dilution Walk  │
+│ - Capex & Power Resource Grids │ │ - BOM Deflation, Backlog Durability│ │ - Insider Trading / Debt Wall │
 └────┬───────────────────────────┘ └─────┬─────────────────────────────┘ └───┬─────────────────────────┘
      │                                   │                                   │
      └───────────────────────────────────┼───────────────────────────────────┘
@@ -84,7 +84,7 @@ It rejects retail momentum fads, separates raw data retrieval from analytical ju
                             ┌────────────┴────────────┐
                             │ Quant Valuation Modeler │
                             │ - Multi-Stage DCF       │
-                            │ - Reverse DCF Solver    │
+                            │ - Monte Carlo & LBO     │
                             │ - SOTP & 2D Sensitivities│
                             └────────────┬────────────┘
                                          │
@@ -162,12 +162,13 @@ The comprehensive institutional hedge fund research process:
    - **Gate G1 Check**: Sourced, dated, and complete.
 3. **Macro Alignment & Forensic Accounting (Parallel Top-Down)**:
    - `macro-thematic`: Evaluates the 5 Master Theses, value chain tier, and resource constraints -> `macro-thematic-assessment.json`.
-   - `forensic-accounting`: Computes Beneish M-Score, Sloan Accrual Ratio, SBC economic dilution bridge, and debt maturity wall -> `forensic-report.json`.
-   - **Gate G2 Check**: Distortion walk verified; forensic red flags categorized.
+   - `forensic-accounting`: Computes Beneish M-Score, Sloan Accrual Ratio, and SBC economic dilution bridge -> `forensic-report.json`.
+   - `esg-governance`: Audits insider trading activity, board independence, and debt covenant maturity walls (LBO viability) -> `esg-report.json`.
+   - **Gate G2 Check**: Distortion walk verified; forensic & governance red flags categorized.
 4. **Sector Deep Dive & Valuation Modeling (Parallel Analysis)**:
    - `sector-specialist`: Deconstructs BOM, unit economics, software stickiness, and contract backlogs -> `sector-deep-dive.json`.
    - `moat-business`: Porter's Five Forces, ROIC vs WACC spread, pricing power -> `business-assessment.json`.
-   - `valuation-modeler`: Authors assumptions for DCF trajectories, terminal growth (<3%), SOTP segments, and peer bands -> `valuation-model.json`.
+   - `valuation-modeler`: Authors assumptions for DCF trajectories, Monte Carlo volatility, LBO leverage metrics, SOTP segments, and peer bands -> `valuation-model.json`.
    - **Execute Deterministic Calculator** (run with `BypassSandbox: true`):
      ```bash
      node pipeline/calculator.mjs ~/Desktop/<TICKER>/valuation-model.json --write
