@@ -626,15 +626,11 @@ export function verify(model) {
   return { verdict: mismatches.length ? "fail" : "pass", mismatches, recomputed: fresh };
 }
 
-// CLI Execution Handlers
-const [, , path, flag] = process.argv;
-const isDirectRun = process.argv[1] && (
-  fileURLToPath(import.meta.url) === process.argv[1] ||
-  process.argv[1].endsWith("/calculator.mjs") ||
-  process.argv[1].endsWith("\\calculator.mjs")
-);
-
-if (isDirectRun) {
+/**
+ * CLI Execution Handler
+ */
+export function runCli(argv = process.argv) {
+  const [, , path, flag] = argv;
   if (!path || path === "-h" || path === "--help") {
     console.log(`Institutional Deterministic Financial Calculator
 Usage:
@@ -677,3 +673,15 @@ Usage:
     process.exit(1);
   }
 }
+
+// Direct run detection
+const isDirectRun = process.argv[1] && (
+  fileURLToPath(import.meta.url) === process.argv[1] ||
+  process.argv[1].endsWith("/calculator.mjs") ||
+  process.argv[1].endsWith("\\calculator.mjs")
+);
+
+if (isDirectRun) {
+  runCli();
+}
+

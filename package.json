@@ -1,0 +1,73 @@
+{
+  "name": "investment-research",
+  "version": "1.0.0",
+  "description": "Institutional Multi-Agent Hedge Fund & Tier-1 VC Equity Research System. Deterministic valuation (DCF, Reverse DCF, SOTP, Beneish M-Score, 2D sensitivities), passing discipline framework, MCP server, and publication-grade OpenXML DOCX & 6-tab Excel workbooks.",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "bin": {
+    "investment-research": "./bin/cli.js",
+    "invest-research": "./bin/cli.js",
+    "investment-research-calc": "./bin/calc-cli.js",
+    "investment-research-mcp": "./bin/mcp-server.js"
+  },
+  "scripts": {
+    "test": "node tests/test_calculator.mjs && python3 tests/test_exporter.py && python3 tests/test_schemas.py && node tests/test_npm_package.mjs",
+    "calc": "node bin/calc-cli.js",
+    "mcp": "node bin/mcp-server.js",
+    "export": "python3 pipeline/exporter.py",
+    "status": "node bin/cli.js status"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bravetrunk/investment-research.git"
+  },
+  "keywords": [
+    "investment-research",
+    "equity-research",
+    "hedge-fund",
+    "tier-1-vc",
+    "dcf-valuation",
+    "reverse-dcf",
+    "beneish-m-score",
+    "sloan-accruals",
+    "sotp",
+    "financial-modeling",
+    "multi-agent",
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "institutional-finance",
+    "claude-code",
+    "antigravity",
+    "cursor"
+  ],
+  "author": "Supanut Chailungka",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Bravetrunk/investment-research/issues"
+  },
+  "homepage": "https://github.com/Bravetrunk/investment-research#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "files": [
+    "bin",
+    "pipeline",
+    "prompts",
+    "references",
+    "schemas",
+    "templates",
+    "contracts",
+    "integrations",
+    "index.js",
+    "index.d.ts",
+    "README.md",
+    "SKILL.md",
+    "HOW_TO_USE.md",
+    "CLAUDE.md",
+    ".cursorrules",
+    ".windsurfrules"
+  ]
+}

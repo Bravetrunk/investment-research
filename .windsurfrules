@@ -1,0 +1,8 @@
+# Windsurf Cascade Rules: Institutional Equity Research
+
+## Core Operating Principles
+- Institutional hedge fund & Tier-1 VC standards only.
+- Strict passing discipline: Reject commodity traps, cannibalized monopolies, and companies with Net Debt / EBITDA > 4.0x.
+- Deterministic arithmetic: Do not approximate DCF in LLM tokens; run `investment-research-calc <model.json> --write`.
+- Workspace: Always write research artifacts to `~/Desktop/<TICKER>/`.
+- Dual deliverable compilation: Execute `investment-research export ~/Desktop/<TICKER>` to compile `RESEARCH.docx` and `QUANT_ANALYSIS.xlsx` (6 tabs).

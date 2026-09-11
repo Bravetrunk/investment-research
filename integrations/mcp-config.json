@@ -1,0 +1,87 @@
+{
+  "description": "Ready-to-use Model Context Protocol (MCP) server configurations for all major AI Agents",
+  "configurations": {
+    "claude_code": {
+      "cli_command": "claude mcp add investment-research -- npx -y -p github:Bravetrunk/investment-research investment-research-mcp"
+    },
+    "claude_desktop": {
+      "mac_path": "~/Library/Application Support/Claude/claude_desktop_config.json",
+      "windows_path": "%APPDATA%\\Claude\\claude_desktop_config.json",
+      "config": {
+        "mcpServers": {
+          "investment-research": {
+            "command": "npx",
+            "args": [
+              "-y",
+              "-p",
+              "github:Bravetrunk/investment-research",
+              "investment-research-mcp"
+            ]
+          }
+        }
+      }
+    },
+    "cursor": {
+      "instructions": "Go to Settings -> Features -> MCP -> Add New MCP Server",
+      "name": "investment-research",
+      "type": "command",
+      "command": "npx -y -p github:Bravetrunk/investment-research investment-research-mcp"
+    },
+    "windsurf": {
+      "path": "~/.codeium/windsurf/mcp_config.json",
+      "config": {
+        "mcpServers": {
+          "investment-research": {
+            "command": "npx",
+            "args": [
+              "-y",
+              "-p",
+              "github:Bravetrunk/investment-research",
+              "investment-research-mcp"
+            ]
+          }
+        }
+      }
+    },
+    "vscode_cline_roo_code": {
+      "instructions": "Add to Cline / Roo Code MCP Settings JSON",
+      "config": {
+        "mcpServers": {
+          "investment-research": {
+            "command": "npx",
+            "args": [
+              "-y",
+              "-p",
+              "github:Bravetrunk/investment-research",
+              "investment-research-mcp"
+            ],
+            "disabled": false,
+            "autoApprove": [
+              "calculate_valuation",
+              "solve_reverse_dcf",
+              "calculate_sotp",
+              "calculate_forensic_accounting",
+              "evaluate_passing_discipline"
+            ]
+          }
+        }
+      }
+    },
+    "antigravity": {
+      "instructions": "Add to Antigravity MCP Server settings",
+      "config": {
+        "mcpServers": {
+          "investment-research": {
+            "command": "npx",
+            "args": [
+              "-y",
+              "-p",
+              "github:Bravetrunk/investment-research",
+              "investment-research-mcp"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,143 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "solve_reverse_dcf",
+      "description": "Solves for the market-implied constant FCF growth rate CAGR embedded in the current stock price using deterministic financial code.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "current_price": { "type": "number", "description": "Current stock market price in USD" },
+          "shares": { "type": "number", "description": "Diluted shares outstanding in millions" },
+          "fcf_base": { "type": "number", "description": "Base year normalized free cash flow in millions" },
+          "discount_rate": { "type": "number", "description": "WACC discount rate (e.g. 0.09 for 9%)" },
+          "terminal_growth_rate": { "type": "number", "description": "Terminal growth rate (e.g. 0.025 for 2.5%)" },
+          "years": { "type": "number", "description": "Explicit forecast years (default: 5)" },
+          "net_cash": { "type": "number", "description": "Net cash (cash - debt) in millions" }
+        },
+        "required": ["current_price", "shares", "fcf_base", "discount_rate", "terminal_growth_rate"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "calculate_valuation",
+      "description": "Executes full multi-stage DCF (Base/Bull/Bear), Graham Number, Price Position, 2D Sensitivity Matrix, and 3:1 Asymmetric Risk/Reward calculation.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "model_path": { "type": "string", "description": "Path to valuation-model.json file" },
+          "model": { "type": "object", "description": "In-memory valuation model JSON specification" },
+          "write_back": { "type": "boolean", "description": "Whether to write results back to disk" }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "calculate_forensic_accounting",
+      "description": "Calculates 8-factor Beneish M-Score and Sloan Accrual Ratio to detect financial manipulation and accrual contamination.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "beneish": {
+            "type": "object",
+            "properties": {
+              "dsri": { "type": "number" },
+              "gmi": { "type": "number" },
+              "aqi": { "type": "number" },
+              "sgi": { "type": "number" },
+              "depi": { "type": "number" },
+              "sgai": { "type": "number" },
+              "lvgi": { "type": "number" },
+              "tata": { "type": "number" }
+            }
+          },
+          "sloan": {
+            "type": "object",
+            "properties": {
+              "net_income": { "type": "number" },
+              "cfo": { "type": "number" },
+              "avg_total_assets": { "type": "number" }
+            },
+            "required": ["net_income", "cfo", "avg_total_assets"]
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "calculate_sotp",
+      "description": "Sum-of-the-parts conglomerate valuation: sums segment enterprise values and bridges to fair value per share.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "shares_diluted": { "type": "number" },
+          "net_cash": { "type": "number" },
+          "segments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "metric_type": { "type": "string", "enum": ["revenue", "ebitda", "ebit", "fcf"] },
+                "metric_value": { "type": "number" },
+                "multiple": { "type": "number" }
+              },
+              "required": ["name", "metric_type", "metric_value", "multiple"]
+            }
+          }
+        },
+        "required": ["shares_diluted", "segments"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "evaluate_passing_discipline",
+      "description": "Evaluates stock against the Investment Committee Passing Discipline Framework.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "ticker": { "type": "string" },
+          "net_debt_to_ebitda": { "type": "number" },
+          "pe_ratio": { "type": "number" },
+          "archetype": {
+            "type": "string",
+            "enum": [
+              "CYCLICAL_COMMODITY_TRAP",
+              "MULTIPLE_DERATING_CANNIBALIZATION",
+              "EXCESSIVE_LEVERAGE",
+              "STRUCTURAL_PRICE_WAR",
+              "SCALE_DISADVANTAGE"
+            ]
+          },
+          "fcf_margin": { "type": "number" },
+          "has_pricing_power": { "type": "boolean" },
+          "notes": { "type": "string" }
+        },
+        "required": ["ticker"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "export_research_artifacts",
+      "description": "Compiles publication Word memo (RESEARCH.docx) and 6-tab financial workbook (QUANT_ANALYSIS.xlsx).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "ticker_or_dir": { "type": "string" },
+          "screen_tickers": { "type": "array", "items": { "type": "string" } },
+          "out_dir": { "type": "string" }
+        }
+      }
+    }
+  }
+]

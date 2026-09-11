@@ -113,45 +113,173 @@ For every asset analyzed, the system generates:
 
 ---
 
-## CLI Tooling & Engine Usage
+---
 
-Both core computation engines require zero external dependencies:
+## Quickstart: The `/goal` & `/boost` Workflow
 
-```bash
-# 1. Deterministic Financial Calculator (Node.js 18+)
-node pipeline/calculator.mjs <model.json>            # Compute & print valuation outputs
-node pipeline/calculator.mjs <model.json> --write    # Compute & write results back into model.json
-node pipeline/calculator.mjs <model.json> --verify   # Gate G3 verification
+When interacting with AI Agents (Antigravity, Claude Code, Cursor, Windsurf), you can unleash the institutional hedge fund research DAG using slash commands:
 
-# 2. Institutional Research Exporter (Python 3.8+)
-python3 pipeline/exporter.py CEG                      # Compiles memo & workbook to ~/Desktop/CEG/
-python3 pipeline/exporter.py /path/to/custom_dir      # Compiles directly into specified folder
-python3 pipeline/exporter.py --screen CEG VST CCJ     # Screen across multiple candidates
-python3 pipeline/exporter.py --screen T1 T2 --out /dir # Custom screen comparison destination
+```text
+/goal Conduct institutional valuation on CEG (Constellation Energy) for AI data center nuclear PPA tailwinds, enforcing 3:1 Asymmetry Hurdle.
+/boost Spawn parallel data ingestion subagents, compute DCF and Reverse DCF via deterministic code, run an adversarial short-seller attack, and export RESEARCH.docx and 6-tab QUANT_ANALYSIS.xlsx directly to ~/Desktop/CEG/.
 ```
+
+👉 **Read the complete guide:** [`HOW_TO_USE.md`](./HOW_TO_USE.md) (รายละเอียดคู่มือภาษาไทยและ Prompt สำเร็จรูป 5 สถานการณ์)
 
 ---
 
-## Automated Verification
+## Installation & Setup
 
-Run the test suite to verify code and document generation:
+Zero external dependencies. Node.js 18+ and Python 3.8+ only.
+
+### 1. Global npm Installation (Recommended for Terminal CLI)
 ```bash
-# Verify financial calculator & valuation engine
-node tests/test_calculator.mjs
+# Install globally from GitHub repository
+npm install -g git+https://github.com/Bravetrunk/investment-research.git
 
-# Verify OpenXML DOCX and 6-tab XLSX exporter
-python3 tests/test_exporter.py
-
-# Verify all 22 JSON schema definitions
-python3 tests/test_schemas.py
+# Verify CLI commands
+investment-research --help
+investment-research-calc --help
 ```
 
----
-
-## Installation & GitHub Repository
-
-Clone directly from GitHub into your local agent skills directory:
+### 2. Zero-Install via `npx`
+Run directly without installing:
 ```bash
+# Run unified CLI
+npx -y -p git+https://github.com/Bravetrunk/investment-research investment-research init CEG
+
+# Compute DCF model directly
+npx -y -p git+https://github.com/Bravetrunk/investment-research investment-research-calc ~/Desktop/CEG/valuation-model.json --write
+
+# Launch MCP Server over stdio
+npx -y -p git+https://github.com/Bravetrunk/investment-research investment-research-mcp
+```
+
+### 3. Agent Skill Directory (Antigravity / Local Agents)
+```bash
+mkdir -p ~/.gemini/config/skills/investment-research
 git clone https://github.com/Bravetrunk/investment-research.git ~/.gemini/config/skills/investment-research
 ```
+
+---
+
+## AI Agent Compatibility Matrix
+
+| AI Platform / Agent | Integration Method | Zero Install (`npx`) | Native MCP | Slash Commands (`/goal`, `/boost`) |
+| :--- | :--- | :---: | :---: | :---: |
+| **Google Antigravity** | Builtin Skill / Subagents / MCP | ✅ | ✅ | ✅ Full Native |
+| **Claude Code** | Native MCP / `CLAUDE.md` / CLI | ✅ | ✅ | ✅ Full Native |
+| **Cursor IDE** | MCP / `.cursorrules` / MDC Rule | ✅ | ✅ | ✅ Chat / Composer |
+| **Windsurf (Cascade)** | MCP / `.windsurfrules` | ✅ | ✅ | ✅ Cascade Flow |
+| **VS Code (Cline / Roo)** | MCP stdio Server | ✅ | ✅ | ✅ Interactive |
+| **Claude Desktop** | MCP stdio Server | ✅ | ✅ | N/A |
+| **OpenAI Codex / GPT-4o** | Function Calling JSON Schema | ✅ | via API | N/A |
+| **xAI Grok** | Tool Calling API / System Prompt | ✅ | via API | N/A |
+| **CrewAI / LangGraph** | Python Tool Adapters | N/A | N/A | ✅ Subclass / @tool |
+
+### Claude Code MCP Setup
+```bash
+claude mcp add investment-research -- npx -y -p github:Bravetrunk/investment-research investment-research-mcp
+```
+
+### Cursor & Windsurf MCP Setup
+Add to your MCP Settings or `~/.codeium/windsurf/mcp_config.json`:
+```json
+{
+  "mcpServers": {
+    "investment-research": {
+      "command": "npx",
+      "args": ["-y", "-p", "github:Bravetrunk/investment-research", "investment-research-mcp"]
+    }
+  }
+}
+```
+
+---
+
+## CLI Commands
+
+```bash
+# 1. Initialize research workspace on Desktop
+investment-research init CEG
+
+# 2. Compute deterministic valuation & write outputs back into file
+investment-research calc ~/Desktop/CEG/valuation-model.json --write
+investment-research calc ~/Desktop/CEG/valuation-model.json --verify
+
+# 3. Direct fast calculator runner
+investment-research-calc ~/Desktop/CEG/valuation-model.json --write
+
+# 4. Compile publication Word memo & 6-tab Excel model
+investment-research export CEG
+
+# 5. Screen across multiple candidate tickers
+investment-research screen CEG VST CCJ --out ~/Desktop/Power_Screen
+
+# 6. Audit artifacts and quality gates
+investment-research status CEG
+
+# 7. Start Model Context Protocol (MCP) server
+investment-research mcp
+```
+
+---
+
+## Programmatic Node.js / TypeScript API
+
+```javascript
+import {
+  dcf,
+  solveReverseDCF,
+  computeBeneishMScore,
+  computeSloanAccrual,
+  evaluatePassingDiscipline
+} from "investment-research";
+
+// Reverse DCF solver: calculate market-implied FCF growth CAGR
+const revDcf = solveReverseDCF({
+  currentPrice: 294.3,
+  shares: 356.5,
+  fcfBase: 3800.0,
+  discountRate: 0.075,
+  terminalGrowthRate: 0.025
+});
+console.log(`Implied Growth Rate: ${revDcf.implied_growth_pct}`);
+
+// Evaluate institutional passing discipline
+const check = evaluatePassingDiscipline({
+  ticker: "EQIX",
+  netDebtToEbitda: 5.2,
+  peRatio: 45.0
+});
+console.log(`Verdict: ${check.verdict}`); // "PASSED" (saying NO to high leverage)
+```
+
+---
+
+## Automated Verification Suite
+
+Run all verification tests (zero dependencies):
+```bash
+npm test
+# Or individually:
+node tests/test_calculator.mjs
+python3 tests/test_exporter.py
+python3 tests/test_schemas.py
+node tests/test_npm_package.mjs
+```
+
+---
+
+## Documentation Links
+
+- **End-to-End User Guide**: [`HOW_TO_USE.md`](./HOW_TO_USE.md)
+- **Claude Code Guide**: [`CLAUDE.md`](./CLAUDE.md)
+- **Comprehensive Skill Blueprint**: [`SKILL.md`](./SKILL.md)
+- **OpenAI & Grok Integration**: [`integrations/openai_codex_agent.py`](./integrations/openai_codex_agent.py)
+- **CrewAI Custom Tools**: [`integrations/crewai_tool.py`](./integrations/crewai_tool.py)
+- **LangChain / LangGraph Tools**: [`integrations/langchain_tools.py`](./integrations/langchain_tools.py)
+- **Web UI System Prompts**: [`integrations/system_prompts.md`](./integrations/system_prompts.md)
+- **GitHub Repository**: [https://github.com/Bravetrunk/investment-research](https://github.com/Bravetrunk/investment-research)
+
 

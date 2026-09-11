@@ -309,3 +309,61 @@ python3 pipeline/exporter.py ~/Desktop/<TICKER>
 python3 pipeline/exporter.py --screen TICKER1 TICKER2 TICKER3
 ```
 Generates `QUANT_ANALYSIS.xlsx` (6 tabs) and `RESEARCH.docx` with stylized tables, dark navy headers, alternating fills, and professional typography.
+
+---
+
+## 8. Universal AI Agent & Model Context Protocol (MCP) Integration
+
+The system can be used as a native MCP server or CLI across all major AI agent environments (Antigravity, Claude Code, Cursor, Windsurf, Cline, Roo Code, Claude Desktop, OpenAI, and CrewAI):
+
+### Unified CLI & Binaries (npm)
+```bash
+# Global installation
+npm install -g git+https://github.com/Bravetrunk/investment-research.git
+
+# Unified CLI commands:
+investment-research init <TICKER>          # Scaffold workspace at ~/Desktop/<TICKER>/
+investment-research calc <model.json>      # Compute deterministic DCF, Reverse DCF, SOTP
+investment-research export <TICKER>        # Compile RESEARCH.docx & QUANT_ANALYSIS.xlsx
+investment-research screen <T1> <T2>...    # Multi-candidate comparison workbook
+investment-research status <TICKER>        # Audit quality gates & artifacts
+investment-research mcp                    # Start Model Context Protocol stdio server
+
+# Fast direct calculator binary:
+investment-research-calc <model.json> [--write|--verify]
+```
+
+### Claude Code Setup
+```bash
+claude mcp add investment-research -- npx -y -p github:Bravetrunk/investment-research investment-research-mcp
+```
+
+### Cursor & Windsurf Setup
+Add to MCP configuration:
+```json
+{
+  "mcpServers": {
+    "investment-research": {
+      "command": "npx",
+      "args": ["-y", "-p", "github:Bravetrunk/investment-research", "investment-research-mcp"]
+    }
+  }
+}
+```
+
+---
+
+## 9. The `/goal` & `/boost` Workflow Reference
+
+When running with AI agents, use the institutional slash commands:
+- **/goal**: Defines the asset target, thematic alignment (5 Master Theses), valuation methodology, and risk constraints.
+- **/boost**: Triggers autonomous multi-agent deep research mode, orchestrating parallel data retrieval, deterministic calculation, adversarial red team attack, and publication export.
+
+### Example Power Prompt:
+```text
+/goal Conduct institutional equity research on Constellation Energy (CEG) under the Liquid Cooling & Power 2026 Master Thesis, enforcing 3:1 Asymmetry Hurdle.
+/boost Spawn parallel data ingestion subagents, compute DCF and Reverse DCF in code, execute isolated Bear Red-Team kill criteria, and compile RESEARCH.docx and 6-tab QUANT_ANALYSIS.xlsx to ~/Desktop/CEG/.
+```
+
+👉 **For the complete guide, prompt templates, and step-by-step walkthrough, see:** [`HOW_TO_USE.md`](./HOW_TO_USE.md)
+
