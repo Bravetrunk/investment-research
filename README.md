@@ -1,5 +1,7 @@
 # Institutional Multi-Agent Hedge Fund & Tier-1 VC Equity Research System
 
+> [🇹🇭 อ่านคู่มือภาษาไทย (Thai Version)](./README_TH.md) | [📖 Complete How-to-Use Guide](./HOW_TO_USE.md)
+
 An institutional-grade equity research operating system modeled after premier global hedge funds (e.g. Tiger Cubs, Point72, Citadel) and Tier-1 venture capital firms (e.g. Sequoia, Founders Fund). 
 
 It implements a rigorous multi-agent DAG architecture that strictly separates raw SEC/market data retrieval from analytical judgment, performs all valuation arithmetic via deterministic code (`pipeline/calculator.mjs`), subjects every investment thesis to an isolated adversarial short-seller attack, conducts forensic accounting audits (Beneish M-Score, Sloan Accrual Anomaly, Stock-Based Compensation economic dilution), enforces a disciplined institutional **"Passing Discipline"**, and compiles publication-grade Word investment memos (`RESEARCH.docx`) and 6-tab financial workbooks (`QUANT_ANALYSIS.xlsx`) directly onto the user's Desktop.
