@@ -8,15 +8,15 @@ It implements a rigorous multi-agent DAG architecture that strictly separates ra
 investment-research/
 ├── SKILL.md                  # Comprehensive skill definition and execution modes
 ├── README.md                 # System overview and architectural reference
-├── contracts/                # 22 Specialist Agent Contracts
+├── contracts/                # 23 Specialist Agent Contracts (19 active + 4 legacy aliases)
 │   ├── cio-ic.yaml           # Chief Investment Officer & Investment Committee Chair
 │   ├── macro-thematic.yaml   # Macro & Value Chain Thematic Strategist (5 Master Theses)
 │   ├── sector-specialist.yaml# Sector Specialists (6 Institutional Coverage Groups)
-│   ├── forensic-accounting.yaml # Beneish M-Score, Sloan Accruals, Real SBC Dilution
-│   ├── valuation-modeler.yaml# Quant & Deterministic Valuation Modeler
-│   ├── bear-adversarial.yaml # Activist Short-Seller Red Team Stress Tester
+│   ├── forensic-accounting.yaml # Beneish M-Score, Sloan Accruals, Real SBC Dilution (alias: earnings-quality.yaml)
+│   ├── valuation-modeler.yaml# Quant & Deterministic Valuation Modeler (alias: valuation.yaml)
+│   ├── bear-adversarial.yaml # Activist Short-Seller Red Team Stress Tester (alias: bear.yaml)
 │   ├── regulatory-geopolitical.yaml # Antitrust, Export Controls & Sovereign Policy
-│   ├── risk-officer.yaml     # Downside Floors, Leverage Limits & Position Sizing
+│   ├── risk-officer.yaml     # Downside Floors, Leverage Limits & Position Sizing (alias: risk.yaml)
 │   ├── orchestrator.yaml     # DAG Planner & Gate Routing
 │   ├── market-data.yaml      # Live Quotes, Valuation Multiples & Capital Structure
 │   ├── filings.yaml          # SEC 10-K, 10-Q, 8-K & Footnote Disclosures
@@ -113,6 +113,25 @@ For every asset analyzed, the system generates:
 
 ---
 
+## CLI Tooling & Engine Usage
+
+Both core computation engines require zero external dependencies:
+
+```bash
+# 1. Deterministic Financial Calculator (Node.js 18+)
+node pipeline/calculator.mjs <model.json>            # Compute & print valuation outputs
+node pipeline/calculator.mjs <model.json> --write    # Compute & write results back into model.json
+node pipeline/calculator.mjs <model.json> --verify   # Gate G3 verification
+
+# 2. Institutional Research Exporter (Python 3.8+)
+python3 pipeline/exporter.py CEG                      # Compiles memo & workbook to ~/Desktop/CEG/
+python3 pipeline/exporter.py /path/to/custom_dir      # Compiles directly into specified folder
+python3 pipeline/exporter.py --screen CEG VST CCJ     # Screen across multiple candidates
+python3 pipeline/exporter.py --screen T1 T2 --out /dir # Custom screen comparison destination
+```
+
+---
+
 ## Automated Verification
 
 Run the test suite to verify code and document generation:
@@ -125,5 +144,14 @@ python3 tests/test_exporter.py
 
 # Verify all 22 JSON schema definitions
 python3 tests/test_schemas.py
+```
+
+---
+
+## Installation & GitHub Repository
+
+Clone directly from GitHub into your local agent skills directory:
+```bash
+git clone https://github.com/Bravetrunk/investment-research.git ~/.gemini/config/skills/investment-research
 ```
 

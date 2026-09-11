@@ -484,42 +484,68 @@ def build_quant_sheets(ticker, model_data, snapshot_data=None, forensic_data=Non
     sheets["Reverse DCF"] = rev_rows
 
     # Tab 4: Sensitivity Matrix (With Explicit Trajectory Alignment)
-    base_dr = base_case.get("discount_rate", 0.09)
-    base_fcf = inputs.get("fcf_base", 100)
-    base_shares = inputs.get("shares_diluted", 1) or 1
-    base_growth = base_case.get("fcf_growth_rate", 0.08)
-    base_trajectory = base_case.get("fcf_trajectory")
-    net_cash = inputs.get("net_cash", 0)
+    precomputed_matrix = model_data.get("sensitivity_matrix")
+    if precomputed_matrix and isinstance(precomputed_matrix, dict) and "matrix" in precomputed_matrix:
+        tg_headers = precomputed_matrix.get("terminal_growth_rates", ["1.5%", "2%", "2.5%", "3%"])
+        sens_rows = [
+            [{"val": f"{ticker} - 2D Valuation Sensitivity Matrix (Fair Value per Share)", "title": True}],
+            [{"val": "Discount Rate (Rows) vs. Terminal Growth Rate (Columns)", "bold": False}],
+            [],
+            [{"val": "Discount Rate \\ Terminal Growth", "header": True}] + [{"val": tg, "header": True} for tg in tg_headers]
+        ]
+        base_dr_pct = f"{round_val(cases_dict.get('base', {}).get('discount_rate', 0.085)*100, 1)}%"
+        base_tg_pct = f"{round_val(dcf.get('terminal_growth_rate', 0.025)*100, 1)}%"
+        for m_row in precomputed_matrix.get("matrix", []):
+            dr_pct = m_row.get("discount_rate_pct", f"{round_val(m_row.get('discount_rate', 0)*100, 1)}%")
+            row = [{"val": dr_pct, "header": True}]
+            cols = m_row.get("columns", {})
+            for tg in tg_headers:
+                val = cols.get(tg, "N/A")
+                is_base = (dr_pct == base_dr_pct and tg == base_tg_pct)
+                cell = {"val": f"${val}" if isinstance(val, (int, float)) else str(val)}
+                if is_base:
+                    cell["accent"] = True
+                    cell["bold"] = True
+                row.append(cell)
+            sens_rows.append(row)
+    else:
+        base_dr = base_case.get("discount_rate", 0.09)
+        base_fcf = inputs.get("fcf_base", 100)
+        base_shares = inputs.get("shares_diluted", 1) or 1
+        base_growth = base_case.get("fcf_growth_rate", 0.08)
+        base_trajectory = base_case.get("fcf_trajectory")
+        net_cash = inputs.get("net_cash", 0)
+        base_tg = dcf.get("terminal_growth_rate", 0.025)
 
-    dr_steps = [base_dr - 0.02, base_dr - 0.01, base_dr, base_dr + 0.01, base_dr + 0.02]
-    tg_steps = [0.015, 0.020, 0.025, 0.030]
+        dr_steps = [base_dr - 0.02, base_dr - 0.01, base_dr, base_dr + 0.01, base_dr + 0.02]
+        tg_steps = [0.015, 0.020, 0.025, 0.030]
 
-    sens_rows = [
-        [{"val": f"{ticker} - 2D Valuation Sensitivity Matrix (Fair Value per Share)", "title": True}],
-        [{"val": "Discount Rate (Rows) vs. Terminal Growth Rate (Columns)", "bold": False}],
-        [],
-        [{"val": "Discount Rate \\ Terminal Growth", "header": True}] + [{"val": f"{round_val(tg*100, 1)}%", "header": True} for tg in tg_steps]
-    ]
+        sens_rows = [
+            [{"val": f"{ticker} - 2D Valuation Sensitivity Matrix (Fair Value per Share)", "title": True}],
+            [{"val": "Discount Rate (Rows) vs. Terminal Growth Rate (Columns)", "bold": False}],
+            [],
+            [{"val": "Discount Rate \\ Terminal Growth", "header": True}] + [{"val": f"{round_val(tg*100, 1)}%", "header": True} for tg in tg_steps]
+        ]
 
-    for dr in dr_steps:
-        row = [{"val": f"{round_val(dr*100, 1)}%", "header": True}]
-        for tg in tg_steps:
-            if dr <= tg:
-                row.append({"val": "N/A (dr <= tg)"})
-                continue
-            if base_trajectory and len(base_trajectory) >= proj_years:
-                pv_f = sum(base_trajectory[y - 1] / ((1 + dr)**y) for y in range(1, proj_years + 1))
-                final_f = base_trajectory[proj_years - 1]
-            else:
-                pv_f = sum((base_fcf * ((1 + base_growth)**y)) / ((1 + dr)**y) for y in range(1, proj_years + 1))
-                final_f = base_fcf * ((1 + base_growth)**proj_years)
-            term_val = (final_f * (1 + tg)) / (dr - tg)
-            pv_t = term_val / ((1 + dr)**proj_years)
-            eq_val = pv_f + pv_t + net_cash
-            fv = round_val(eq_val / base_shares, 2)
-            is_base = (abs(dr - base_dr) < 0.001 and abs(tg - 0.025) < 0.001)
-            row.append({"val": f"${fv}", "accent": is_base, "bold": is_base})
-        sens_rows.append(row)
+        for dr in dr_steps:
+            row = [{"val": f"{round_val(dr*100, 1)}%", "header": True}]
+            for tg in tg_steps:
+                if dr <= tg:
+                    row.append({"val": "N/A (dr <= tg)"})
+                    continue
+                if base_trajectory and len(base_trajectory) >= proj_years:
+                    pv_f = sum(base_trajectory[y - 1] / ((1 + dr)**y) for y in range(1, proj_years + 1))
+                    final_f = base_trajectory[proj_years - 1]
+                else:
+                    pv_f = sum((base_fcf * ((1 + base_growth)**y)) / ((1 + dr)**y) for y in range(1, proj_years + 1))
+                    final_f = base_fcf * ((1 + base_growth)**proj_years)
+                term_val = (final_f * (1 + tg)) / (dr - tg)
+                pv_t = term_val / ((1 + dr)**proj_years)
+                eq_val = pv_f + pv_t + net_cash
+                fv = round_val(eq_val / base_shares, 2)
+                is_base = (abs(dr - base_dr) < 0.001 and abs(tg - base_tg) < 0.001)
+                row.append({"val": f"${fv}", "accent": is_base, "bold": is_base})
+            sens_rows.append(row)
 
     sheets["Sensitivity Matrix"] = sens_rows
 
@@ -795,6 +821,7 @@ def export_screen_comparison(tickers, output_dir="."):
         ])
         md_lines.append(f"| **{t}** | ${price} | ${base_fv} | {upside} | {pos} | {rr} | [{t}](file://{os.path.abspath(t_dir)}) |")
 
+    os.makedirs(output_dir, exist_ok=True)
     target_path = os.path.join(output_dir, "SCREEN_COMPARISON.xlsx")
     build_xlsx(target_path, {"Screen Comparison": rows})
     print(f"[+] Successfully generated screen comparison workbook: {target_path}")
@@ -805,22 +832,37 @@ def export_screen_comparison(tickers, output_dir="."):
     print(f"[+] Successfully generated comparison markdown: {md_target}")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python3 pipeline/exporter.py <TICKER_DIR> or --screen <TICKER1> <TICKER2>...")
-        sys.exit(1)
+    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
+        print("Institutional Equity Research Exporter")
+        print("Usage:")
+        print("  python3 pipeline/exporter.py <TICKER_OR_DIR>           # Export single research package")
+        print("  python3 pipeline/exporter.py --screen <T1> <T2>... [--out <DIR>] # Multi-candidate screen comparison")
+        print("")
+        print("Examples:")
+        print("  python3 pipeline/exporter.py CEG                      # Exports to ~/Desktop/CEG/")
+        print("  python3 pipeline/exporter.py /tmp/CEG                 # Exports directly to /tmp/CEG/")
+        print("  python3 pipeline/exporter.py --screen CEG VST CCJ     # Screens across multiple tickers")
+        sys.exit(0 if len(sys.argv) >= 2 and sys.argv[1] in ("-h", "--help") else 1)
 
     desktop_dir = os.path.expanduser("~/Desktop")
 
     if sys.argv[1] == "--screen":
-        tickers = [t.upper() for t in sys.argv[2:]]
+        args = sys.argv[2:]
+        out_dir = desktop_dir
+        if "--out" in args:
+            out_idx = args.index("--out")
+            if out_idx + 1 < len(args):
+                out_dir = os.path.abspath(os.path.expanduser(args[out_idx + 1]))
+                args = args[:out_idx] + args[out_idx + 2:]
+            else:
+                args = args[:out_idx]
+        tickers = [t.upper() for t in args]
         for t in tickers:
-            export_ticker_folder(os.path.join(desktop_dir, t))
-        export_screen_comparison(tickers, output_dir=desktop_dir)
+            export_ticker_folder(os.path.join(out_dir, t))
+        export_screen_comparison(tickers, output_dir=out_dir)
     else:
         raw_target = os.path.expanduser(sys.argv[1])
-        if os.path.isabs(raw_target) and os.path.exists(raw_target):
-            target_dir = raw_target
-        elif os.path.exists(raw_target) and ("Desktop" in os.path.abspath(raw_target) or not os.path.exists(os.path.join(desktop_dir, os.path.basename(raw_target)))):
+        if os.path.isabs(raw_target) or os.sep in raw_target or os.path.exists(raw_target):
             target_dir = os.path.abspath(raw_target)
         else:
             ticker_name = os.path.basename(raw_target).upper()

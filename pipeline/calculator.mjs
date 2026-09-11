@@ -23,6 +23,7 @@
  */
 
 import { readFileSync, writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 export const round = (n, d = 2) => {
   if (typeof n !== "number" || isNaN(n)) return null;
@@ -114,6 +115,19 @@ export function solveReverseDCF({
       implied_fcf_growth_rate: null,
       implied_growth_pct: "N/A (Negative Target EV)",
       interpretation: "Target Enterprise Value is negative or zero (excess net cash exceeds market cap).",
+    };
+  }
+
+  if (!discountRate || !terminalGrowthRate || discountRate <= terminalGrowthRate) {
+    return {
+      current_price: currentPrice,
+      target_equity_value: round(targetEquityValue),
+      target_enterprise_value: round(targetEV),
+      implied_fcf_growth_rate: null,
+      implied_growth_pct: "N/A (Invalid Discount/Terminal Rates)",
+      discount_rate_used: discountRate,
+      terminal_growth_used: terminalGrowthRate,
+      interpretation: `Discount rate (${discountRate}) must strictly exceed terminal growth rate (${terminalGrowthRate}) for reverse DCF convergence.`,
     };
   }
 
@@ -461,6 +475,9 @@ export function computeAsymmetricRiskReward(currentPrice, lowFV, baseFV, highFV)
  * Main Institutional Compute Pipeline
  */
 export function compute(model) {
+  if (!model || !model.inputs || !model.dcf || !Array.isArray(model.dcf.cases)) {
+    throw new Error("Invalid valuation model: 'inputs' and 'dcf.cases' array are required");
+  }
   const { inputs, dcf: dcfSpec, sotp: sotpSpec, forensic: forensicData } = model;
   const years = dcfSpec.projection_years ?? 5;
 
@@ -611,7 +628,22 @@ export function verify(model) {
 
 // CLI Execution Handlers
 const [, , path, flag] = process.argv;
-if (path && (import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.endsWith("calculator.mjs"))) {
+const isDirectRun = process.argv[1] && (
+  fileURLToPath(import.meta.url) === process.argv[1] ||
+  process.argv[1].endsWith("/calculator.mjs") ||
+  process.argv[1].endsWith("\\calculator.mjs")
+);
+
+if (isDirectRun) {
+  if (!path || path === "-h" || path === "--help") {
+    console.log(`Institutional Deterministic Financial Calculator
+Usage:
+  node pipeline/calculator.mjs <model.json>            # compute and print
+  node pipeline/calculator.mjs <model.json> --write    # write outputs back into model.json
+  node pipeline/calculator.mjs <model.json> --verify   # Gate G3 verification`);
+    process.exit(0);
+  }
+
   try {
     const model = JSON.parse(readFileSync(path, "utf8"));
     if (flag === "--verify") {

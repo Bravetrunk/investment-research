@@ -7,7 +7,7 @@ import zipfile
 
 # Add pipeline directory to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "pipeline")))
-from exporter import build_xlsx, build_docx_from_markdown, export_ticker_folder, build_quant_sheets
+from exporter import build_xlsx, build_docx_from_markdown, export_ticker_folder, build_quant_sheets, export_screen_comparison
 
 print("[*] Testing pipeline/exporter.py...")
 
@@ -154,5 +154,32 @@ with tempfile.TemporaryDirectory() as tmpdir:
         assert "-2.45" in s5_xml, "Tab 5 must contain Beneish score from loaded forensic-report.json"
 
     print("  [+] export_ticker_folder verified with 6 tabs, sensitivity alignment, and artifact integration.")
+
+    # 4. Test export_screen_comparison
+    screen_dir = os.path.join(tmpdir, "screen_output")
+    export_screen_comparison(["CEG"], output_dir=screen_dir)
+    assert os.path.exists(os.path.join(screen_dir, "SCREEN_COMPARISON.xlsx")), "SCREEN_COMPARISON.xlsx must exist"
+    assert os.path.exists(os.path.join(screen_dir, "COMPARISON.md")), "COMPARISON.md must exist"
+    with zipfile.ZipFile(os.path.join(screen_dir, "SCREEN_COMPARISON.xlsx"), 'r') as z:
+        assert '[Content_Types].xml' in z.namelist()
+    with open(os.path.join(screen_dir, "COMPARISON.md"), "r", encoding="utf-8") as f:
+        md_text = f.read()
+        assert "Institutional Screen Comparison Summary" in md_text
+        assert "CEG" in md_text
+    print("  [+] export_screen_comparison verified successfully.")
+
+    # 5. Test build_quant_sheets with precomputed sensitivity matrix
+    mock_with_sens = dict(mock_model)
+    mock_with_sens["sensitivity_matrix"] = {
+        "terminal_growth_rates": ["1.5%", "2%", "2.5%", "3%"],
+        "discount_rates": ["7%", "8%", "9%"],
+        "matrix": [
+            {"discount_rate": 0.075, "discount_rate_pct": "7.5%", "columns": {"1.5%": 250.0, "2%": 280.0, "2.5%": 305.23, "3%": 340.0}}
+        ]
+    }
+    sheets_out = build_quant_sheets("CEG", mock_with_sens)
+    sens_tab = sheets_out["Sensitivity Matrix"]
+    assert any("305.23" in str(cell.get("val", "")) for row in sens_tab for cell in row), "Precomputed sensitivity matrix value must appear in Tab 4"
+    print("  [+] Precomputed sensitivity matrix ingestion verified.")
 
 print("[✓] ALL EXPORTER TESTS PASSED!")

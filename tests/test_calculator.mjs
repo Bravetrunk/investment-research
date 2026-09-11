@@ -117,10 +117,27 @@ const revDcfNegative = solveReverseDCF({
   discountRate: 0.10,
   terminalGrowthRate: 0.025,
 });
-assert(revDcfNegative !== null, "Should return an informative object, not null crash");
 assert.strictEqual(revDcfNegative.implied_fcf_growth_rate, null, "Implied growth should be null for negative FCF base");
 assert(revDcfNegative.interpretation.includes("inapplicable"), "Must explain why constant reverse DCF is inapplicable");
 console.log("  [+] Reverse DCF negative FCF edge case passed.");
+
+// 8b. Test Reverse DCF with Discount Rate <= Terminal Growth (Edge Case)
+const revDcfInvalidRate = solveReverseDCF({
+  currentPrice: 100,
+  shares: 10,
+  fcfBase: 50,
+  discountRate: 0.02,
+  terminalGrowthRate: 0.025,
+});
+assert(revDcfInvalidRate !== null, "Should return an informative object, not null or crash");
+assert.strictEqual(revDcfInvalidRate.implied_fcf_growth_rate, null, "Implied growth must be null when discount rate <= terminal growth rate");
+assert(revDcfInvalidRate.interpretation.includes("strictly exceed"), "Must explain discount rate vs terminal growth rate convergence requirement");
+console.log("  [+] Reverse DCF discount <= terminal growth edge case passed.");
+
+// 8c. Test compute() validation error handling
+assert.throws(() => compute(null), /Invalid valuation model/, "compute(null) must throw descriptive validation error");
+assert.throws(() => compute({}), /Invalid valuation model/, "compute({}) must throw descriptive validation error");
+console.log("  [+] compute() input validation error handling passed.");
 
 // 9. Full Model with Trajectory and Sensitivity Matrix Alignment
 const sampleModel = {
