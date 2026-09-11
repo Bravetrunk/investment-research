@@ -102,6 +102,53 @@ class ReverseDCFTool(BaseTool):
             if os.path.exists(tpath):
                 os.remove(tpath)
 
+class ForensicAccountingTool(BaseTool):
+    name: str = "forensic_accounting_auditor"
+    description: str = (
+        "Computes Beneish M-Score and Sloan Accrual Ratio to audit earnings quality and detect manipulation."
+    )
+
+    def _run(
+        self,
+        beneish_inputs: Optional[Dict[str, float]] = None,
+        net_income: Optional[float] = None,
+        cfo: Optional[float] = None,
+        avg_total_assets: Optional[float] = None,
+    ) -> str:
+        payload = {}
+        if beneish_inputs:
+            payload["beneish"] = beneish_inputs
+        if net_income is not None and cfo is not None and avg_total_assets is not None:
+            payload["sloan"] = {"net_income": net_income, "cfo": cfo, "avg_total_assets": avg_total_assets}
+        code = f"""
+        import('./index.js').then(m => {{
+            const res = {{}};
+            const p = {json.dumps(payload)};
+            if (p.beneish) res.beneish = m.beneish(p.beneish);
+            if (p.sloan) res.sloan = m.sloan(p.sloan);
+            console.log(JSON.stringify(res));
+        }}).catch(e => {{ console.error(e); process.exit(1); }});
+        """
+        res = subprocess.run(["node", "--input-type=module", "-e", code], cwd=str(REPO_ROOT), capture_output=True, text=True)
+        return res.stdout or res.stderr
+
+class SOTPValuationTool(BaseTool):
+    name: str = "sotp_valuation"
+    description: str = (
+        "Computes Sum-of-the-Parts conglomerate enterprise value by summing segment EBITDA/revenue multiples."
+    )
+
+    def _run(self, segments: List[Dict[str, Any]], shares_diluted: float, net_cash: float = 0.0) -> str:
+        payload = {"segments": segments, "shares_diluted": shares_diluted, "net_cash": net_cash}
+        code = f"""
+        import('./index.js').then(m => {{
+            const res = m.sotp({json.dumps(payload)});
+            console.log(JSON.stringify(res));
+        }}).catch(e => {{ console.error(e); process.exit(1); }});
+        """
+        res = subprocess.run(["node", "--input-type=module", "-e", code], cwd=str(REPO_ROOT), capture_output=True, text=True)
+        return res.stdout or res.stderr
+
 class PassingDisciplineTool(BaseTool):
     name: str = "passing_discipline_evaluator"
     description: str = (
@@ -143,10 +190,11 @@ class ResearchExporterTool(BaseTool):
     )
 
     def _run(self, ticker_or_dir: str, screen_tickers: Optional[List[str]] = None) -> str:
+        import sys
         exporter_path = REPO_ROOT / "pipeline" / "exporter.py"
         if screen_tickers:
-            cmd = ["python3", str(exporter_path), "--screen"] + screen_tickers
+            cmd = [sys.executable, str(exporter_path), "--screen"] + screen_tickers
         else:
-            cmd = ["python3", str(exporter_path), ticker_or_dir]
+            cmd = [sys.executable, str(exporter_path), ticker_or_dir]
         res = subprocess.run(cmd, capture_output=True, text=True)
         return res.stdout or res.stderr

@@ -184,6 +184,79 @@ sampleModel.dcf.cases.forEach((c) => {
 
 const verifyResult = verify(sampleModel);
 assert.strictEqual(verifyResult.verdict, "pass", "Verify should pass when values match computed output");
-console.log("  [+] Full model compute and Gate G3 verify passed successfully!");
+// 10. Test compute() with Forensic Inputs (Beneish & Sloan)
+const forensicModel = {
+  ticker: "CEG",
+  computed_by: "uncomputed",
+  inputs: {
+    current_price: 150.0,
+    eps_used: 8.5,
+    eps_basis: "adjusted",
+    fcf_base: 3200.0,
+    shares_diluted: 315.0,
+  },
+  dcf: {
+    projection_years: 5,
+    terminal_growth_rate: 0.025,
+    cases: [
+      { case: "low", fcf_growth_rate: 0.05, discount_rate: 0.10, rationale: "Floor" },
+      { case: "base", fcf_growth_rate: 0.12, discount_rate: 0.085, rationale: "Base" },
+      { case: "high", fcf_growth_rate: 0.18, discount_rate: 0.075, rationale: "Upside" },
+    ],
+  },
+  forensic: {
+    beneish: { dsri: 1.02, gmi: 0.98, aqi: 1.01, sgi: 1.15, depi: 0.99, sgai: 0.95, lvgi: 1.05, tata: 0.02 },
+    sloan: { net_income: 2800.0, cfo: 3400.0, avg_total_assets: 35000.0 },
+    stock_based_compensation: 320.0,
+  },
+  graham: { applicability: "meaningful" },
+  relative: { multiples: [] },
+};
+
+const forensicComputed = compute(forensicModel);
+assert(forensicComputed.forensic !== null, "Forensic report must not be null");
+assert(forensicComputed.forensic.beneish_m_score !== null, "Beneish M-Score must be computed");
+assert.strictEqual(forensicComputed.forensic.beneish_m_score.verdict, "CLEAN_LOW_MANIPULATION_RISK");
+assert(forensicComputed.forensic.sloan_accrual !== null, "Sloan accrual must be computed");
+assert.strictEqual(forensicComputed.forensic.sloan_accrual.accrual_pct, "-1.71%");
+assert.strictEqual(forensicComputed.forensic.sbc_dilution_ratio, "10%");
+console.log("  [+] Forensic accounting integration in compute() verified successfully.");
+
+// 11. Test compute() with SOTP Segments
+const sotpModel = {
+  ticker: "CEG",
+  computed_by: "uncomputed",
+  inputs: {
+    current_price: 150.0,
+    eps_used: 8.5,
+    eps_basis: "adjusted",
+    fcf_base: 3200.0,
+    shares_diluted: 315.0,
+    net_cash: -1500.0,
+  },
+  dcf: {
+    projection_years: 5,
+    terminal_growth_rate: 0.025,
+    cases: [
+      { case: "low", fcf_growth_rate: 0.05, discount_rate: 0.10, rationale: "Floor" },
+      { case: "base", fcf_growth_rate: 0.12, discount_rate: 0.085, rationale: "Base" },
+      { case: "high", fcf_growth_rate: 0.18, discount_rate: 0.075, rationale: "Upside" },
+    ],
+  },
+  sotp: {
+    segments: [
+      { name: "Core Generation", metric_type: "ebitda", metric_value: 3500.0, multiple: 12.0 },
+      { name: "Nuclear Hyperscale PPA", metric_type: "ebitda", metric_value: 1200.0, multiple: 18.0 },
+    ],
+  },
+  graham: { applicability: "meaningful" },
+  relative: { multiples: [] },
+};
+
+const sotpComputed = compute(sotpModel);
+assert(sotpComputed.sotp !== null, "SOTP report must be computed");
+assert.strictEqual(sotpComputed.sotp.fair_value_per_share, 197.14);
+assert.strictEqual(sotpComputed.sotp.segments.length, 2);
+console.log("  [+] SOTP integration in compute() verified successfully.");
 
 console.log("[✓] ALL CALCULATOR TESTS PASSED!");

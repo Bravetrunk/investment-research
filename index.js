@@ -24,22 +24,24 @@ import {
 
 // Convenience aliases
 export const beneish = computeBeneishMScore;
-export const sloan = (args) => {
-  if (typeof args === "object" && args !== null) {
+export const sloan = (...args) => {
+  if (args.length === 1 && typeof args[0] === "object" && args[0] !== null) {
+    const a = args[0];
     return computeSloanAccrual(
-      args.netIncome ?? args.net_income,
-      args.cfo,
-      args.avgTotalAssets ?? args.avg_total_assets ?? args.totalAssets,
-      args.prevTotalAssets ?? args.prev_total_assets ?? null
+      a.netIncome ?? a.net_income,
+      a.cfo,
+      a.avgTotalAssets ?? a.avg_total_assets ?? a.totalAssets ?? a.total_assets,
+      a.prevTotalAssets ?? a.prev_total_assets ?? null
     );
   }
-  return computeSloanAccrual(...arguments);
+  return computeSloanAccrual(...args);
 };
-export const sotp = (args) => {
-  if (args && args.segments) {
-    return computeSOTP(args, args.shares ?? args.shares_diluted, args.netCash ?? args.net_cash ?? 0);
+export const sotp = (...args) => {
+  if (args.length === 1 && typeof args[0] === "object" && args[0] !== null && args[0].segments) {
+    const a = args[0];
+    return computeSOTP(a, a.shares ?? a.shares_diluted, a.netCash ?? a.net_cash ?? 0);
   }
-  return computeSOTP(...arguments);
+  return computeSOTP(...args);
 };
 export const fractionalKelly = computeKellySizing;
 

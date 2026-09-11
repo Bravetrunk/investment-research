@@ -25,9 +25,24 @@ def call_calculator_cli(args):
 
 def call_exporter_cli(args):
     exporter_path = REPO_ROOT / "pipeline" / "exporter.py"
-    cmd = ["python3", str(exporter_path)] + args
+    cmd = [sys.executable, str(exporter_path)] + args
     res = subprocess.run(cmd, capture_output=True, text=True)
     return res.stdout or res.stderr
+
+def _call_node_api(fn_name, args_payload):
+    code = f"""
+    import('./index.js').then(m => {{
+        const res = m.{fn_name}({json.dumps(args_payload)});
+        console.log(JSON.stringify(res));
+    }}).catch(e => {{
+        console.error(e);
+        process.exit(1);
+    }});
+    """
+    res = subprocess.run(["node", "--input-type=module", "-e", code], cwd=str(REPO_ROOT), capture_output=True, text=True)
+    if res.returncode != 0:
+        raise RuntimeError(f"Node execution failed: {res.stderr}")
+    return json.loads(res.stdout)
 
 def execute_tool_call(tool_name, arguments):
     """Executes an institutional tool call from OpenAI or Grok."""
@@ -91,6 +106,22 @@ def execute_tool_call(tool_name, arguments):
                 if os.path.exists(tpath):
                     os.remove(tpath)
 
+    elif tool_name == "calculate_sotp":
+        res = _call_node_api("sotp", arguments)
+        return json.dumps(res, indent=2)
+
+    elif tool_name == "calculate_forensic_accounting":
+        res = {}
+        if "beneish" in arguments:
+            res["beneish"] = _call_node_api("beneish", arguments["beneish"])
+        if "sloan" in arguments:
+            res["sloan"] = _call_node_api("sloan", arguments["sloan"])
+        return json.dumps(res, indent=2)
+
+    elif tool_name == "evaluate_passing_discipline":
+        res = _call_node_api("evaluatePassingDiscipline", arguments)
+        return json.dumps(res, indent=2)
+
     elif tool_name == "export_research_artifacts":
         target = arguments.get("ticker_or_dir")
         screen = arguments.get("screen_tickers")
@@ -101,6 +132,22 @@ def execute_tool_call(tool_name, arguments):
             return call_exporter_cli(cmd)
         elif target:
             return call_exporter_cli([target])
+
+    elif tool_name == "init_workspace":
+        ticker = arguments.get("ticker", "").upper()
+        target_dir = arguments.get("target_dir")
+        cmd = ["init", ticker]
+        if target_dir:
+            cmd += ["--dir", target_dir]
+        cli_path = REPO_ROOT / "bin" / "cli.js"
+        res = subprocess.run(["node", str(cli_path)] + cmd, capture_output=True, text=True)
+        return res.stdout or res.stderr
+
+    elif tool_name == "verify_valuation_model":
+        model_path = os.path.expanduser(arguments.get("model_path", ""))
+        calc_cli = REPO_ROOT / "bin" / "calc-cli.js"
+        res = subprocess.run(["node", str(calc_cli), model_path, "--verify"], capture_output=True, text=True)
+        return res.stdout or res.stderr
 
     raise ValueError(f"Unknown tool: {tool_name}")
 

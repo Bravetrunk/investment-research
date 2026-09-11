@@ -12,10 +12,10 @@
     "investment-research-mcp": "./bin/mcp-server.js"
   },
   "scripts": {
-    "test": "node tests/test_calculator.mjs && python3 tests/test_exporter.py && python3 tests/test_schemas.py && node tests/test_npm_package.mjs",
+    "test": "node tests/run_tests.mjs",
     "calc": "node bin/calc-cli.js",
     "mcp": "node bin/mcp-server.js",
-    "export": "python3 pipeline/exporter.py",
+    "export": "node bin/cli.js export",
     "status": "node bin/cli.js status"
   },
   "repository": {
@@ -54,7 +54,9 @@
   "dependencies": {},
   "files": [
     "bin",
-    "pipeline",
+    "pipeline/*.mjs",
+    "pipeline/*.py",
+    "pipeline/*.yaml",
     "prompts",
     "references",
     "schemas",

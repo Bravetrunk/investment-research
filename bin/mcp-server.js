@@ -21,6 +21,7 @@ import {
   sloan,
   evaluatePassingDiscipline,
 } from "../index.js";
+import { findPythonExecutable } from "../pipeline/python-finder.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = resolve(__filename, "..");
@@ -277,8 +278,8 @@ function handleMessage(msg) {
           model.reverse_dcf = computed.reverse_dcf;
           model.asymmetric_risk_reward = computed.asymmetric_risk_reward;
           model.sensitivity_matrix = computed.sensitivity_matrix;
-          if (computed.sotp) model.sotp = computed.sotp;
-          if (computed.forensic) model.forensic = computed.forensic;
+          if (computed.sotp) model.sotp_result = computed.sotp;
+          if (computed.forensic) model.forensic_result = computed.forensic;
           writeFileSync(p, JSON.stringify(model, null, 2), "utf8");
           computed._written_to = p;
         }
@@ -326,6 +327,10 @@ function handleMessage(msg) {
         });
         resultText = JSON.stringify(res, null, 2);
       } else if (name === "export_research_artifacts") {
+        const py = findPythonExecutable();
+        if (!py) {
+          throw new Error("Python 3.8+ is required for OpenXML export, but no working Python interpreter was found.");
+        }
         const exporterScript = join(REPO_ROOT, "pipeline", "exporter.py");
         let pyArgs = [exporterScript];
         if (args.screen_tickers && args.screen_tickers.length > 0) {
@@ -336,8 +341,11 @@ function handleMessage(msg) {
         } else {
           throw new Error("Must provide either 'ticker_or_dir' or 'screen_tickers'.");
         }
-        const child = spawnSync("python3", pyArgs, { encoding: "utf8" });
+        const child = spawnSync(py, pyArgs, { encoding: "utf8" });
         if (child.error) throw child.error;
+        if (child.status !== 0) {
+          throw new Error(`Exporter exited with code ${child.status}: ${child.stderr || child.stdout}`);
+        }
         resultText = child.stdout || child.stderr || "Exporter executed successfully.";
       } else if (name === "init_workspace") {
         const ticker = args.ticker.toUpperCase();
@@ -372,11 +380,41 @@ function handleMessage(msg) {
               wacc_range: [0.07, 0.08, 0.085, 0.09, 0.10],
               terminal_growth_range: [0.015, 0.02, 0.025, 0.03],
             },
+            sotp: {
+              segments: [
+                { name: "Core Business", metric_type: "ebitda", metric_value: 600.0, multiple: 12.0 }
+              ]
+            },
+            forensic: {
+              beneish: { dsri: 1.0, gmi: 1.0, aqi: 1.0, sgi: 1.0, depi: 1.0, sgai: 1.0, lvgi: 1.0, tata: 0.0 },
+              sloan: { net_income: 450.0, cfo: 520.0, avg_total_assets: 5000.0 }
+            },
             computed_by: "uncomputed",
           };
           writeFileSync(modelPath, JSON.stringify(starter, null, 2), "utf8");
         }
-        resultText = `Initialized workspace at ${dir} with valuation-model.json template.`;
+        const snapPath = join(dir, "financial-snapshot.json");
+        if (!existsSync(snapPath)) {
+          const starterSnapshot = {
+            ticker,
+            retrieved_at: new Date().toISOString(),
+            market_metrics: {
+              current_price: 100.0,
+              market_cap: 10000.0,
+              enterprise_value: 10000.0,
+              pe_ratio: 20.0,
+              ev_ebitda: 12.0,
+            },
+            balance_sheet: {
+              cash_and_equivalents: 500.0,
+              total_debt: 500.0,
+              net_debt: 0.0,
+              net_debt_to_ebitda: 0.0,
+            },
+          };
+          writeFileSync(snapPath, JSON.stringify(starterSnapshot, null, 2), "utf8");
+        }
+        resultText = `Initialized workspace at ${dir} with valuation-model.json and financial-snapshot.json templates.`;
       } else if (name === "verify_valuation_model") {
         const p = resolvePath(args.model_path);
         if (!existsSync(p)) throw new Error(`Model not found at: ${p}`);

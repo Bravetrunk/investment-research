@@ -85,12 +85,78 @@ def solve_reverse_dcf_growth(
             os.remove(tpath)
 
 @tool
+def calculate_forensic_accounting(
+    beneish_inputs: Optional[Dict[str, float]] = None,
+    net_income: Optional[float] = None,
+    cfo: Optional[float] = None,
+    avg_total_assets: Optional[float] = None,
+) -> str:
+    """Computes Beneish M-Score and Sloan Accrual Ratio to audit earnings manipulation."""
+    payload = {}
+    if beneish_inputs:
+        payload["beneish"] = beneish_inputs
+    if net_income is not None and cfo is not None and avg_total_assets is not None:
+        payload["sloan"] = {"net_income": net_income, "cfo": cfo, "avg_total_assets": avg_total_assets}
+    code = f"""
+    import('./index.js').then(m => {{
+        const res = {{}};
+        const p = {json.dumps(payload)};
+        if (p.beneish) res.beneish = m.beneish(p.beneish);
+        if (p.sloan) res.sloan = m.sloan(p.sloan);
+        console.log(JSON.stringify(res));
+    }}).catch(e => {{ console.error(e); process.exit(1); }});
+    """
+    res = subprocess.run(["node", "--input-type=module", "-e", code], cwd=str(REPO_ROOT), capture_output=True, text=True)
+    return res.stdout or res.stderr
+
+@tool
+def calculate_sotp_valuation(segments: List[Dict[str, Any]], shares_diluted: float, net_cash: float = 0.0) -> str:
+    """Computes Sum-of-the-Parts enterprise value by summing segment EBITDA/revenue multiples."""
+    payload = {"segments": segments, "shares_diluted": shares_diluted, "net_cash": net_cash}
+    code = f"""
+    import('./index.js').then(m => {{
+        const res = m.sotp({json.dumps(payload)});
+        console.log(JSON.stringify(res));
+    }}).catch(e => {{ console.error(e); process.exit(1); }});
+    """
+    res = subprocess.run(["node", "--input-type=module", "-e", code], cwd=str(REPO_ROOT), capture_output=True, text=True)
+    return res.stdout or res.stderr
+
+@tool
+def evaluate_passing_discipline(
+    ticker: str,
+    net_debt_to_ebitda: Optional[float] = None,
+    pe_ratio: Optional[float] = None,
+    archetype: Optional[str] = None,
+    fcf_margin: Optional[float] = None,
+    has_pricing_power: bool = True,
+) -> str:
+    """Evaluates stock against the institutional Investment Committee Passing Discipline Framework."""
+    flags = []
+    if net_debt_to_ebitda is not None and net_debt_to_ebitda > 4.0:
+        flags.append(f"Net Debt / EBITDA ({net_debt_to_ebitda:.2f}x) > 4.0x ceiling")
+    if pe_ratio is not None and pe_ratio > 50 and not has_pricing_power:
+        flags.append(f"P/E {pe_ratio:.1f}x lacks pricing power")
+    if fcf_margin is not None and fcf_margin < 0:
+        flags.append("Negative normalized FCF margin")
+
+    verdict = "PASSED" if flags or archetype else "APPROVED_LONG"
+    return json.dumps({
+        "ticker": ticker.upper(),
+        "verdict": verdict,
+        "passed_discipline": verdict == "PASSED",
+        "flags": flags,
+        "archetype_triggered": archetype
+    }, indent=2)
+
+@tool
 def export_research_documents(ticker_or_dir: str, screen_tickers: Optional[List[str]] = None) -> str:
     """Compiles publication-grade RESEARCH.docx and 6-tab QUANT_ANALYSIS.xlsx workbook."""
+    import sys
     exporter_path = REPO_ROOT / "pipeline" / "exporter.py"
     if screen_tickers:
-        cmd = ["python3", str(exporter_path), "--screen"] + screen_tickers
+        cmd = [sys.executable, str(exporter_path), "--screen"] + screen_tickers
     else:
-        cmd = ["python3", str(exporter_path), ticker_or_dir]
+        cmd = [sys.executable, str(exporter_path), ticker_or_dir]
     res = subprocess.run(cmd, capture_output=True, text=True)
     return res.stdout or res.stderr

@@ -139,5 +139,34 @@
         }
       }
     }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "init_workspace",
+      "description": "Scaffolds institutional research folder with valuation-model.json and financial-snapshot.json at ~/Desktop/<TICKER>/.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "ticker": { "type": "string", "description": "Stock ticker symbol (e.g. 'CEG')" },
+          "target_dir": { "type": "string", "description": "Optional custom workspace path" }
+        },
+        "required": ["ticker"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "verify_valuation_model",
+      "description": "Gate G3 verification: Checks numerical consistency between stored DCF fair values and recomputed outputs.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "model_path": { "type": "string", "description": "Path to valuation-model.json" }
+        },
+        "required": ["model_path"]
+      }
+    }
   }
 ]

@@ -535,16 +535,23 @@ export function compute(model) {
   // Forensic checks if data supplied
   let forensicReport = null;
   if (forensicData) {
-    const beneish = computeBeneishMScore(forensicData.beneish_inputs);
-    const sloan = computeSloanAccrual(
-      forensicData.net_income,
-      forensicData.cfo,
-      forensicData.total_assets,
-      forensicData.prev_total_assets
-    );
+    const beneishInputs = forensicData.beneish_inputs || forensicData.beneish;
+    const beneish = beneishInputs ? computeBeneishMScore(beneishInputs) : null;
+    const netIncome = forensicData.net_income ?? forensicData.sloan?.net_income;
+    const cfo = forensicData.cfo ?? forensicData.sloan?.cfo;
+    const totalAssets =
+      forensicData.total_assets ??
+      forensicData.sloan?.avg_total_assets ??
+      forensicData.sloan?.total_assets;
+    const prevTotalAssets =
+      forensicData.prev_total_assets ??
+      forensicData.sloan?.prev_total_assets ??
+      null;
+    const sloan = computeSloanAccrual(netIncome, cfo, totalAssets, prevTotalAssets);
+    const sbc = forensicData.stock_based_compensation ?? forensicData.sbc;
     const sbcDilutionPct =
-      inputs.fcf_base && inputs.fcf_base > 0 && forensicData.stock_based_compensation
-        ? round((forensicData.stock_based_compensation / inputs.fcf_base) * 100, 2) + "%"
+      inputs.fcf_base && inputs.fcf_base > 0 && sbc
+        ? round((sbc / inputs.fcf_base) * 100, 2) + "%"
         : null;
 
     forensicReport = {
@@ -630,8 +637,25 @@ export function verify(model) {
  * CLI Execution Handler
  */
 export function runCli(argv = process.argv) {
-  const [, , path, flag] = argv;
-  if (!path || path === "-h" || path === "--help") {
+  const rawArgs = argv.slice(2);
+  let path = null;
+  let isWrite = false;
+  let isVerify = false;
+
+  for (const a of rawArgs) {
+    if (a === "-h" || a === "--help") {
+      path = "-h";
+      break;
+    } else if (a === "--write") {
+      isWrite = true;
+    } else if (a === "--verify") {
+      isVerify = true;
+    } else if (!a.startsWith("-") && !path) {
+      path = a;
+    }
+  }
+
+  if (!path || path === "-h") {
     console.log(`Institutional Deterministic Financial Calculator
 Usage:
   node pipeline/calculator.mjs <model.json>            # compute and print
@@ -642,12 +666,12 @@ Usage:
 
   try {
     const model = JSON.parse(readFileSync(path, "utf8"));
-    if (flag === "--verify") {
+    if (isVerify) {
       console.log(JSON.stringify(verify(model), null, 2));
     } else {
       const out = compute(model);
       console.log(JSON.stringify(out, null, 2));
-      if (flag === "--write") {
+      if (isWrite) {
         model.computed_by = "calculator";
         model.dcf.cases.forEach((c) => {
           c.fair_value_per_share = out.cases[c.case].fair_value_per_share;
@@ -659,13 +683,11 @@ Usage:
         model.sensitivity_matrix = out.sensitivity_matrix;
         if (out.sotp) {
           model.sotp_result = out.sotp;
-          model.sotp = out.sotp;
         }
         if (out.forensic) {
           model.forensic_result = out.forensic;
-          model.forensic = out.forensic;
         }
-        writeFileSync(path, JSON.stringify(model, null, 2));
+        writeFileSync(path, JSON.stringify(model, null, 2), "utf8");
       }
     }
   } catch (err) {

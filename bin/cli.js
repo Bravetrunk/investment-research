@@ -18,6 +18,7 @@ import { homedir } from "node:os";
 import { spawnSync, fork } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { runCli } from "../pipeline/calculator.mjs";
+import { findPythonExecutable } from "../pipeline/python-finder.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = resolve(__filename, "..");
@@ -235,6 +236,16 @@ function statusCommand(ticker, options) {
         const color = rr >= 3.0 ? c.green : c.red;
         console.log(`  Reward/Risk Hurdle:  ${color}${rr}x ${rr >= 3.0 ? "(Meets 3:1 Hurdle)" : "(Fails 3:1 Hurdle)"}${c.reset}`);
       }
+      const forensicObj = data.forensic_result || data.forensic;
+      if (forensicObj?.beneish_m_score) {
+        const bm = forensicObj.beneish_m_score;
+        const bColor = bm.is_manipulator_probability_high ? c.red : c.green;
+        console.log(`  Beneish M-Score:     ${bColor}${bm.m_score} (${bm.verdict})${c.reset}`);
+      }
+      if (forensicObj?.sloan_accrual) {
+        const sl = forensicObj.sloan_accrual;
+        console.log(`  Sloan Accrual:       ${sl.accrual_pct} (${sl.quality_band})`);
+      }
     } catch (e) {
       console.log(`${c.red}[!] Failed parsing valuation-model.json: ${e.message}${c.reset}`);
     }
@@ -254,9 +265,19 @@ function statusCommand(ticker, options) {
 }
 
 function exportCommand(args) {
+  const py = findPythonExecutable();
+  if (!py) {
+    console.error(`${c.red}[!] Error: Python 3.8+ is required for OpenXML Word & Excel export, but no working Python interpreter was found.${c.reset}`);
+    console.error(`    Please ensure Python 3 is installed or set the PYTHON environment variable (e.g. export PYTHON=/usr/bin/python3).`);
+    process.exit(1);
+  }
   const exporterScript = join(REPO_ROOT, "pipeline", "exporter.py");
   const pyArgs = [exporterScript, ...args];
-  const res = spawnSync("python3", pyArgs, { stdio: "inherit" });
+  const res = spawnSync(py, pyArgs, { stdio: "inherit" });
+  if (res.error) {
+    console.error(`${c.red}[!] Export failed to execute:${c.reset}`, res.error.message);
+    process.exit(1);
+  }
   process.exit(res.status ?? 0);
 }
 
