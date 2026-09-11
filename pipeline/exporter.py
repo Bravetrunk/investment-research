@@ -2,13 +2,13 @@
 """
 Zero-dependency exporter for the investment-research skill.
 Compiles institutional equity research artifacts into Wall Street / Tier-1 VC deliverables:
-  1. <TICKER>/QUANT_ANALYSIS.xlsx - Institutional 6-tab financial model:
+  1. <TICKER>/QUANT_ANALYSIS.xlsx - Institutional 8-tab financial model:
      - Tab 1: Valuation Summary (Fair values, upside, Graham, Price position, Asymmetric R:R)
      - Tab 2: DCF Projections & Capex Trajectory (Explicit flows, PVs, terminal share)
      - Tab 3: Reverse DCF & Market Expectations (Implied growth vs consensus)
      - Tab 4: 2D Valuation Sensitivity Matrix (WACC vs Terminal Growth)
      - Tab 5: Forensic Accounting & Earnings Quality (Beneish M-Score, Sloan Accrual, SBC Dilution)
-     - Tab 6: Peer Multiples & SOTP Valuation (Relative multiples & sum-of-the-parts)
+     - Tab 6: Peer Multiples & SOTP Valuation (Relative multiples & sum-of-the-parts)\n    - Tab 7: Monte Carlo Simulation (Probabilistic DCF outcomes)\n    - Tab 8: LBO & Debt Analysis (Leveraged Buyout viability)
   2. <TICKER>/RESEARCH.docx - Professional 8-section institutional equity research memo.
   3. SCREEN_COMPARISON.xlsx & COMPARISON.md - Across multiple screen candidates.
 
@@ -626,12 +626,48 @@ def build_quant_sheets(ticker, model_data, snapshot_data=None, forensic_data=Non
         mult_rows.append([{"val": "SOTP Fair Value Per Share", "header": True}, {"val": f"${sotp.get('fair_value_per_share')}", "header": True}, {"val": ""}, {"val": ""}, {"val": ""}])
 
     sheets["Multiples & SOTP"] = mult_rows
+
+    # Tab 7: Monte Carlo Simulation
+    mc = model_data.get("monte_carlo_dcf")
+    if mc:
+        mc_rows = [
+            [{"val": f"{ticker} - Monte Carlo DCF Simulation", "title": True}],
+            [{"val": "1,000 runs using normal distribution (Box-Muller) for FCF Growth and Discount Rate", "bold": False}],
+            [],
+            [{"val": "Simulation Metric", "header": True}, {"val": "Result", "header": True}],
+            [{"val": "Simulation Runs", "bold": True}, {"val": mc.get("runs", 1000)}],
+            [{"val": "Mean Fair Value", "bold": True}, {"val": f"${mc.get('mean_fair_value', 'N/A')}"}],
+            [{"val": "Probability > Current Price", "bold": True}, {"val": mc.get("probability_above_current_price", "N/A"), "accent": True}]
+        ]
+        sheets["Monte Carlo DCF"] = mc_rows
+        
+    # Tab 8: LBO & Debt Analysis
+    lbo = model_data.get("lbo_model")
+    if lbo:
+        lbo_rows = [
+            [{"val": f"{ticker} - Leveraged Buyout (LBO) Model", "title": True}],
+            [{"val": "Estimated Private Equity IRR based on cash flow sweeping to pay down debt", "bold": False}],
+            [],
+            [{"val": "LBO Metric", "header": True}, {"val": "Value ($M) / Ratio", "header": True}],
+            [{"val": "Entry Enterprise Value", "bold": True}, {"val": lbo.get("entry_enterprise_value")}],
+            [{"val": "Debt Amount Drawn", "bold": True}, {"val": lbo.get("debt_amount")}],
+            [{"val": "Equity Contribution", "bold": True}, {"val": lbo.get("equity_contribution")}],
+            [],
+            [{"val": "Exit Enterprise Value (Year 5)", "bold": True}, {"val": lbo.get("exit_enterprise_value")}],
+            [{"val": "Remaining Debt at Exit", "bold": True}, {"val": lbo.get("remaining_debt")}],
+            [{"val": "Exit Equity Value", "bold": True}, {"val": lbo.get("exit_equity_value")}],
+            [],
+            [{"val": "Implied IRR (5-Year Hold)", "header": True}, {"val": lbo.get("implied_irr_pct", "N/A"), "header": True}]
+        ]
+        sheets["LBO & Debt Analysis"] = lbo_rows
+
     return sheets
+
 
 def export_ticker_folder(target_dir):
     """
     Scans target_dir for model, snapshot, thesis, verdict, and forensic files, then generates:
-      - <target_dir>/QUANT_ANALYSIS.xlsx (Institutional 6-tab financial model)
+      - <target_dir>/QUANT_ANALYSIS.xlsx (Institutional 8-tab financial model)
       - <target_dir>/RESEARCH.docx (8-Section institutional investment memo)
     """
     target_dir = os.path.abspath(target_dir)

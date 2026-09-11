@@ -471,6 +471,105 @@ export function computeAsymmetricRiskReward(currentPrice, lowFV, baseFV, highFV)
   };
 }
 
+
+/**
+ * Box-Muller transform to generate normally distributed random numbers
+ */
+export function randomNormal(mean = 0, stdDev = 1) {
+  let u = 0, v = 0;
+  while(u === 0) u = Math.random();
+  while(v === 0) v = Math.random();
+  const num = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+  return num * stdDev + mean;
+}
+
+/**
+ * Monte Carlo DCF Simulation
+ */
+export function computeMonteCarloDCF({
+  fcfBase, currentPrice, shares, netCash,
+  baseGrowth, stdDevGrowth = 0.05,
+  baseDiscount, stdDevDiscount = 0.01,
+  terminalGrowth, years = 5, runs = 1000
+}) {
+  if (!fcfBase || !currentPrice || !shares) return null;
+  let successCount = 0;
+  let totalValue = 0;
+  
+  for (let i = 0; i < runs; i++) {
+    const simGrowth = randomNormal(baseGrowth, stdDevGrowth);
+    let simDiscount = randomNormal(baseDiscount, stdDevDiscount);
+    if (simDiscount <= terminalGrowth) simDiscount = terminalGrowth + 0.005; 
+    
+    let pvFlows = 0;
+    for (let y = 1; y <= years; y++) {
+      const fcf = fcfBase * Math.pow(1 + simGrowth, y);
+      pvFlows += fcf / Math.pow(1 + simDiscount, y);
+    }
+    
+    const finalFcf = fcfBase * Math.pow(1 + simGrowth, years);
+    const terminalValue = (finalFcf * (1 + terminalGrowth)) / (simDiscount - terminalGrowth);
+    const pvTerminal = terminalValue / Math.pow(1 + simDiscount, years);
+    
+    const equityValue = pvFlows + pvTerminal + netCash;
+    const fairValue = equityValue / shares;
+    
+    totalValue += fairValue;
+    if (fairValue > currentPrice) successCount++;
+  }
+  
+  const meanFairValue = Math.round((totalValue / runs) * 100) / 100;
+  const prob = Math.round((successCount / runs) * 1000) / 10;
+  return {
+    runs,
+    mean_fair_value: meanFairValue,
+    probability_above_current_price: prob + "%"
+  };
+}
+
+/**
+ * Basic LBO Model (Leveraged Buyout) 
+ */
+export function computeLBO({
+  ebitda, ebitdaMultiple = 10, leverageMultiple = 5,
+  interestRate = 0.08, taxRate = 0.25,
+  capexPctEbitda = 0.1, nwcPctEbitda = 0.05, holdYears = 5
+}) {
+  if (!ebitda || ebitda <= 0) return null;
+  const purchasePrice = ebitda * ebitdaMultiple;
+  const debtAmount = ebitda * leverageMultiple;
+  let equityContribution = purchasePrice - debtAmount;
+  if (equityContribution <= 0) equityContribution = 0.01;
+  
+  let currentDebt = debtAmount;
+  let currentEbitda = ebitda;
+  
+  for (let y = 1; y <= holdYears; y++) {
+    currentEbitda = currentEbitda * 1.05; 
+    const interest = currentDebt * interestRate;
+    const ebt = currentEbitda - interest;
+    const taxes = ebt > 0 ? ebt * taxRate : 0;
+    const capex = currentEbitda * capexPctEbitda;
+    const nwc = currentEbitda * nwcPctEbitda;
+    const freeCashFlow = currentEbitda - interest - taxes - capex - nwc;
+    currentDebt = Math.max(0, currentDebt - freeCashFlow);
+  }
+  
+  const exitEnterpriseValue = currentEbitda * ebitdaMultiple;
+  const exitEquityValue = exitEnterpriseValue - currentDebt;
+  const irr = (Math.pow(exitEquityValue / equityContribution, 1 / holdYears) - 1) * 100;
+  
+  return {
+    entry_enterprise_value: Math.round(purchasePrice),
+    debt_amount: Math.round(debtAmount),
+    equity_contribution: Math.round(equityContribution),
+    exit_enterprise_value: Math.round(exitEnterpriseValue),
+    exit_equity_value: Math.round(exitEquityValue),
+    remaining_debt: Math.round(currentDebt),
+    implied_irr_pct: Math.round(irr * 10) / 10 + "%"
+  };
+}
+
 /**
  * Main Institutional Compute Pipeline
  */
@@ -561,6 +660,29 @@ export function compute(model) {
     };
   }
 
+  
+  // Monte Carlo & LBO
+  let monteCarloResult = null;
+  let lboResult = null;
+  if (inputs.fcf_base && inputs.current_price && inputs.shares_diluted && baseCase) {
+    monteCarloResult = computeMonteCarloDCF({
+      fcfBase: inputs.fcf_base,
+      currentPrice: inputs.current_price,
+      shares: inputs.shares_diluted,
+      netCash: inputs.net_cash ?? 0,
+      baseGrowth: baseCase.fcf_growth_rate,
+      baseDiscount: baseCase.discount_rate,
+      terminalGrowth: dcfSpec.terminal_growth_rate,
+      years
+    });
+  }
+  if (model.sotp && model.sotp.segments && model.sotp.segments.length > 0) {
+    const ebitdaSegment = model.sotp.segments.find(s => s.metric_type === 'ebitda');
+    if (ebitdaSegment) {
+       lboResult = computeLBO({ ebitda: ebitdaSegment.metric_value });
+    }
+  }
+
   const warnings = [];
   if (inputs.fcf_base <= 0) {
     const hasTrajectories = dcfSpec.cases.every((c) => c.fcf_trajectory && c.fcf_trajectory.length > 0);
@@ -609,6 +731,8 @@ export function compute(model) {
     sensitivity_matrix: sensitivityMatrix,
     asymmetric_risk_reward: riskReward,
     forensic: forensicReport,
+    monte_carlo_dcf: monteCarloResult,
+    lbo_model: lboResult,
     warnings,
   };
 }
@@ -687,6 +811,9 @@ Usage:
         if (out.forensic) {
           model.forensic_result = out.forensic;
         }
+        if (out.monte_carlo_dcf) model.monte_carlo_dcf = out.monte_carlo_dcf;
+        if (out.lbo_model) model.lbo_model = out.lbo_model;
+
         writeFileSync(path, JSON.stringify(model, null, 2), "utf8");
       }
     }

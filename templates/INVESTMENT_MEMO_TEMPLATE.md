@@ -42,18 +42,21 @@
 
 ---
 
-## 4. Forensic Accounting & Earnings Quality Audit
+## 4. Forensic Accounting, ESG & Corporate Governance Audit
 - **Beneish M-Score**: `[M-SCORE]` (Threshold: -1.78). Sub-indices audited (DSRI, GMI, AQI, SGI, DEPI, SGAI, TATA, LVGI).
 - **Sloan Accrual Ratio**: `[RATIO]%` (Normal band: -10% to +10%). Cash flow quality backing reported net income.
 - **Stock-Based Compensation Dilution Walk**:
   - SBC expense: `$[SBC]M` (`[X]%` of reported FCF).
   - True Economic EPS Bridge: Adjusting reported Non-GAAP EPS down to reflect share dilution.
-- **Balance Sheet Resilience**: Net Debt / EBITDA (`[X]x`), interest coverage ratio, and debt maturity schedule.
+- **Insider Trading & Governance**: `[Key Insider Sales/Buys]` | Board Independence: `[Score]` | Key Man Risk: `[Risk]`
+- **Debt Maturity Wall & Covenants**: Nearest maturity wall in `[Year]`, Breach Risk: `[Low/Med/High]`. Net Debt / EBITDA (`[X]x`).
+- **LBO Viability Score**: `[1-10]`. `[Brief rationale on cash flow predictability vs leverage room]`.
 
 ---
 
-## 5. Quant Valuation & Deterministic Financial Models
+## 5. Quant Valuation, Monte Carlo & Deterministic Financial Models
 - **Deterministic DCF Model**: 3 scenarios (Bear / Base / Bull) computed via `pipeline/calculator.mjs`.
+- **Monte Carlo Simulation (1,000 runs)**: Probability of Intrinsic Value > Current Price = `[XX.X]%`.
 - **Capex Trajectory Modeling**: Explicit multi-year cash flow projections capturing capital cycle inflection.
 - **Reverse DCF Analysis**: Implied market FCF growth rate `[X]%` compared against company historical execution.
 - **Sum-of-the-Parts (SOTP)**: Segment breakdown and peer multiple benchmarking for multi-division conglomerates.

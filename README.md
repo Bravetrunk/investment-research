@@ -10,6 +10,10 @@ It implements a rigorous multi-agent DAG architecture that strictly separates ra
 investment-research/
 ├── SKILL.md                  # Comprehensive skill definition and execution modes
 ├── README.md                 # System overview and architectural reference
+├── bin/                      # CLI Executables
+│   ├── cli.js                # Main investment-research CLI
+│   ├── calc-cli.js           # Deterministic calculator CLI
+│   └── mcp-server.js         # Model Context Protocol stdio server
 ├── contracts/                # 23 Specialist Agent Contracts (19 active + 4 legacy aliases)
 │   ├── cio-ic.yaml           # Chief Investment Officer & Investment Committee Chair
 │   ├── macro-thematic.yaml   # Macro & Value Chain Thematic Strategist (5 Master Theses)
@@ -30,6 +34,11 @@ investment-research/
 │   ├── publisher.yaml        # OpenXML DOCX & Multi-Tab XLSX Exporter
 │   ├── screener.yaml         # Multi-Ticker Screening & GARP Filters
 │   └── monitor.yaml          # Invalidation Trigger & Quarterly Earnings Watch
+├── integrations/             # Third-party wrappers and connectors
+│   ├── openai_codex_agent.py # OpenAI function calling wrapper
+│   ├── crewai_tool.py        # CrewAI tool wrapper
+│   ├── langchain_tools.py    # LangChain integration
+│   └── mcp-config.json       # Example MCP configuration
 ├── schemas/                  # 22 Validated JSON Schemas
 │   ├── ic-verdict.schema.json
 │   ├── macro-thematic-assessment.schema.json
@@ -48,7 +57,8 @@ investment-research/
 │   ├── calculator.mjs        # Zero-dependency deterministic financial calculator
 │   ├── exporter.py           # Zero-dependency OpenXML DOCX & 6-Tab XLSX generator
 │   ├── dag.yaml              # Multi-agent dependency graph with parallel & isolated groups
-│   └── gates.yaml            # Quality Gates G1-G6, IC_VERDICT & HUMAN
+│   ├── gates.yaml            # Quality Gates G1-G6, IC_VERDICT & HUMAN
+│   └── python-finder.mjs     # OS-agnostic Python interpreter discovery
 ├── prompts/                  # Specialist Role Prompts
 │   ├── cio-ic.prompt.md
 │   ├── macro-thematic.prompt.md
@@ -68,9 +78,14 @@ investment-research/
 │   ├── INVESTMENT_MEMO_TEMPLATE.md     # 8-Section Wall Street / Tier-1 VC Memo
 │   └── IC_VERDICT_TEMPLATE.md          # Investment Committee Formal Deliberation Record
 └── tests/                    # Automated Verification Suite
+    ├── run_tests.mjs         # Main test suite runner orchestrator
     ├── test_calculator.mjs   # Node.js tests for DCF, Reverse DCF, SOTP, Beneish, Sloan
     ├── test_exporter.py      # Python tests for OpenXML DOCX and 6-tab XLSX compilation
-    └── test_schemas.py       # Python test verifying all 22 JSON schema definitions
+    ├── test_schemas.py       # Python test verifying all 22 JSON schema definitions
+    └── test_npm_package.mjs  # Verifies zero-dependency CLI & NPM publish integrity
+├── tools/                    # Shell helper utilities
+│   ├── run_analysis.sh       # Bash wrapper for full e2e research run
+│   └── quick_screen.sh       # Bash wrapper for screening flow
 ```
 
 ---
@@ -373,9 +388,11 @@ node tests/test_npm_package.mjs
 - **Claude Code Guide**: [`CLAUDE.md`](./CLAUDE.md)
 - **Comprehensive Skill Blueprint**: [`SKILL.md`](./SKILL.md)
 - **OpenAI & Grok Integration**: [`integrations/openai_codex_agent.py`](./integrations/openai_codex_agent.py)
+- **OpenAI Function Tools Schema**: [`integrations/openai_codex_tools.json`](./integrations/openai_codex_tools.json)
 - **CrewAI Custom Tools**: [`integrations/crewai_tool.py`](./integrations/crewai_tool.py)
 - **LangChain / LangGraph Tools**: [`integrations/langchain_tools.py`](./integrations/langchain_tools.py)
 - **Web UI System Prompts**: [`integrations/system_prompts.md`](./integrations/system_prompts.md)
+- **MCP Cursor/Windsurf Configs**: [`integrations/mcp-config.json`](./integrations/mcp-config.json)
 - **GitHub Repository**: [https://github.com/Bravetrunk/investment-research](https://github.com/Bravetrunk/investment-research)
 
 

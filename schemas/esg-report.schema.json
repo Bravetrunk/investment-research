@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "ESG & Corporate Governance Audit",
+  "description": "Output schema for the ESG & Corporate Governance agent.",
+  "properties": {
+    "ticker": { "type": "string" },
+    "insider_trading_audit": {
+      "type": "object",
+      "properties": {
+        "recent_insider_selling_volume": { "type": "string" },
+        "red_flags_detected": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["recent_insider_selling_volume", "red_flags_detected"]
+    },
+    "governance_structure": {
+      "type": "object",
+      "properties": {
+        "board_independence_score": { "type": "string" },
+        "founder_control_status": { "type": "string" },
+        "key_man_risk": { "type": "string" }
+      },
+      "required": ["board_independence_score", "founder_control_status", "key_man_risk"]
+    },
+    "debt_covenants_maturity": {
+      "type": "object",
+      "properties": {
+        "maturity_wall_year": { "type": "integer" },
+        "covenant_breach_risk": { "type": "string", "enum": ["Low", "Medium", "High"] },
+        "details": { "type": "string" }
+      },
+      "required": ["maturity_wall_year", "covenant_breach_risk", "details"]
+    },
+    "lbo_candidate_score": {
+      "type": "integer",
+      "description": "Score from 1-10 on viability for a Private Equity buyout based on cash flow stability and debt capacity.",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "conclusion": { "type": "string" }
+  },
+  "required": [
+    "ticker",
+    "insider_trading_audit",
+    "governance_structure",
+    "debt_covenants_maturity",
+    "lbo_candidate_score",
+    "conclusion"
+  ]
+}

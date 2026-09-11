@@ -46,10 +46,16 @@ nodes:
     parallel_group: top_down
     produces: forensic-report
 
+  audit.esg:
+    agent: esg-governance
+    depends_on: [gate.G1]
+    parallel_group: top_down
+    produces: esg-report
+
   gate.G2:
     gate: G2
-    depends_on: [audit.forensic]
-    on_fail: { loop_back_to: [audit.forensic], max_attempts: 3 }
+    depends_on: [audit.forensic, audit.esg]
+    on_fail: { loop_back_to: [audit.forensic, audit.esg], max_attempts: 3 }
 
   # ---- Sector Deep Dive & Valuation Modeling ----
   analysis.sector:
