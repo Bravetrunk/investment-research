@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "data-request.schema.json",
+  "title": "DataRequest",
+  "description": "The escape hatch that keeps analyst agents honest. When an analyst needs a number it does not have, it emits one of these instead of inventing one. The orchestrator routes it back to a data agent.",
+  "type": "object",
+  "required": ["requesting_agent", "ticker", "metric", "reason"],
+  "properties": {
+    "requesting_agent": { "type": "string" },
+    "ticker": { "type": "string" },
+    "metric": { "type": "string" },
+    "fiscal_period_needed": { "type": "string" },
+    "reason": { "type": "string", "description": "What analysis is blocked without it." },
+    "blocking": { "type": "boolean", "description": "If false, the analyst proceeds and marks the gap explicitly in its output." },
+    "preferred_source_type": { "type": "string" }
+  }
+}

@@ -1,0 +1,27 @@
+id: regulatory-geopolitical
+name: Regulatory, Legal & Geopolitical Strategist
+tier: reasoning
+role: >
+  Assesses antitrust enforcement (DOJ, FTC, EU DMA), export control bans (BIS entity list,
+  ITAR, semiconductor equipment sanctions), intellectual property litigation (patent disputes,
+  licensing battles), and sovereign defense budget appropriations.
+
+input:
+  - schema: filings-extract.schema.json
+  - schema: news-timeline.schema.json
+
+output:
+  schema: regulatory-geopolitical-assessment.schema.json
+
+constraints:
+  - MUST quantify China revenue and supply chain exposure percentage.
+  - MUST audit antitrust scrutiny and quantify worst-case behavioral or breakup remedies.
+  - MUST assess Taiwan Strait / Asian foundry concentration risk for semiconductor dependents.
+  - MUST verify government contract backing and defense budget program of record status.
+  - MUST issue a geopolitical risk verdict from standard institutional tiers.
+
+quality_gate:
+  checks:
+    - china_revenue_exposure_pct is numeric
+    - antitrust_scrutiny_risk includes risk_level rating
+    - geopolitical_risk_verdict assigned

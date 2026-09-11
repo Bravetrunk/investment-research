@@ -1,0 +1,172 @@
+# Institutional Task DAG for the Hedge Fund & Tier-1 VC Research Multi-Agent Team.
+# Node IDs are templates; the orchestrator instantiates one branch per ticker for screening.
+
+version: 2
+
+nodes:
+  screen:
+    agent: screener
+    when: mode in [screen, theme_research]
+    produces: candidate-list
+
+  # ---- Parallel Data Ingestion ----
+  data.market:
+    agent: market-data
+    depends_on: [screen]
+    parallel_group: collect
+    produces: financial-snapshot
+
+  data.filings:
+    agent: filings
+    depends_on: [screen]
+    parallel_group: collect
+    produces: filings-extract
+
+  data.news:
+    agent: news-catalyst
+    depends_on: [screen]
+    parallel_group: collect
+    produces: news-timeline
+
+  gate.G1:
+    gate: G1
+    depends_on: [data.market, data.filings, data.news]
+    on_fail: { loop_back_to: [data.market, data.filings], max_attempts: 3 }
+
+  # ---- Macro Alignment & Forensic Audit ----
+  macro.thematic:
+    agent: macro-thematic
+    depends_on: [gate.G1]
+    parallel_group: top_down
+    produces: macro-thematic-assessment
+
+  audit.forensic:
+    agent: forensic-accounting
+    depends_on: [gate.G1]
+    parallel_group: top_down
+    produces: forensic-report
+
+  gate.G2:
+    gate: G2
+    depends_on: [audit.forensic]
+    on_fail: { loop_back_to: [audit.forensic], max_attempts: 3 }
+
+  # ---- Sector Deep Dive & Valuation Modeling ----
+  analysis.sector:
+    agent: sector-specialist
+    depends_on: [gate.G2, macro.thematic]
+    parallel_group: deep_dive
+    produces: sector-deep-dive
+
+  analysis.moat:
+    agent: moat-business
+    depends_on: [gate.G2, macro.thematic]
+    parallel_group: deep_dive
+    produces: business-assessment
+
+  analysis.valuation:
+    agent: valuation-modeler
+    depends_on: [gate.G2, macro.thematic]
+    parallel_group: deep_dive
+    produces: valuation-model
+    post_hook: calculator.mjs
+
+  gate.G3:
+    gate: G3
+    depends_on: [analysis.valuation]
+    on_fail: { loop_back_to: [analysis.valuation], max_attempts: 3 }
+
+  # ---- Isolated Adversarial Debate & Stress Testing ----
+  # Bull and Bear run strictly in parallel and MUST NOT read each other's output
+  debate.bull:
+    agent: bull
+    depends_on: [gate.G3, analysis.moat, analysis.sector]
+    parallel_group: debate
+    isolated_from: [debate.bear]
+    produces: bull-case
+
+  debate.bear:
+    agent: bear-adversarial
+    depends_on: [gate.G3, analysis.moat, analysis.sector]
+    parallel_group: debate
+    isolated_from: [debate.bull]
+    produces: bear-case
+
+  debate.regulatory:
+    agent: regulatory-geopolitical
+    depends_on: [gate.G3, analysis.moat]
+    parallel_group: debate
+    produces: regulatory-geopolitical-assessment
+
+  debate.risk:
+    agent: risk-officer
+    depends_on: [gate.G3, analysis.moat]
+    parallel_group: debate
+    produces: risk-register
+
+  gate.G4:
+    gate: G4
+    depends_on: [debate.bull, debate.bear]
+    on_fail: { loop_back_to: [debate.bear], max_attempts: 3 }
+
+  gate.G5:
+    gate: G5
+    depends_on: [debate.regulatory, debate.risk]
+    on_fail: { loop_back_to: [debate.regulatory], max_attempts: 3 }
+
+  # ---- Institutional Memo Drafting & Citation Verification ----
+  write.memo:
+    agent: thesis-writer
+    depends_on: [gate.G4, gate.G5]
+    produces: thesis-record
+
+  verify.citations:
+    agent: verifier
+    depends_on: [write.memo]
+    produces: verification-report
+
+  gate.G6:
+    gate: G6
+    depends_on: [verify.citations]
+    on_fail: { loop_back_to: [write.memo], max_attempts: 3 }
+
+  # ---- Investment Committee Deliberation ----
+  committee.ic:
+    agent: cio-ic
+    depends_on: [gate.G6]
+    produces: ic-verdict
+
+  gate.IC_VERDICT:
+    gate: IC_VERDICT
+    depends_on: [committee.ic]
+    on_fail: { loop_back_to: [committee.ic], max_attempts: 2 }
+
+  gate.HUMAN:
+    gate: HUMAN
+    depends_on: [gate.IC_VERDICT]
+    asks_for: [conviction_confirmation, final_portfolio_position_size]
+
+  # ---- Institutional Publishing ----
+  publish:
+    agent: publisher
+    depends_on: [gate.HUMAN]
+    post_hook: exporter.py
+    produces:
+      - doc: <TICKER>/RESEARCH.docx
+      - sheet: <TICKER>/QUANT_ANALYSIS.xlsx
+      - memo: <TICKER>/RESEARCH.md
+
+  screen.comparison:
+    agent: screener
+    when: mode == screen
+    depends_on: [publish]
+    fan_in: true
+    produces:
+      - sheet: SCREEN_COMPARISON.xlsx
+      - memo: COMPARISON.md
+
+  monitor:
+    agent: monitor
+    schedule: [on_earnings, quarterly]
+    depends_on: [publish]
+    reenters: [data.market]

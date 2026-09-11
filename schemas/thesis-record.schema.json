@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "thesis-record.schema.json",
+  "title": "ThesisRecord",
+  "description": "The durable output. Maps onto the Notion Investment Thesis / Stock Ticker databases. This is the object the monitor agent re-reads every quarter, so it must be self-contained.",
+  "type": "object",
+  "required": ["ticker", "company_name", "created_at", "sections", "fair_value_range", "current_price", "invalidation_triggers", "evidence_manifest"],
+  "properties": {
+    "ticker": { "type": "string" },
+    "company_name": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "last_reviewed_at": { "type": "string", "format": "date-time" },
+    "status": { "type": "string", "enum": ["Researching", "Watchlist", "Active", "Invalidated", "Archived"], "description": "Must match the Notion select options exactly. Read the schema before writing; never invent an option." },
+    "conviction": {
+      "type": "string",
+      "enum": ["High", "Medium", "Low"],
+      "description": "HUMAN-SET. Reflects margin of safety, not growth rate: a fast grower already priced for perfection is lower conviction than a slower grower below its own fair-value range."
+    },
+    "sections": {
+      "type": "object",
+      "description": "The standard 7-section write-up. Section 7 present only when advice framing was requested.",
+      "required": ["s1_snapshot", "s2_business_moat", "s3_valuation", "s4_margin_of_safety", "s5_risks", "s6_verdict"],
+      "properties": {
+        "s0_disclaimer": { "type": "string", "description": "Educational fundamental analysis, not personalized advice. Stated once, italicized at top." },
+        "s1_snapshot": { "type": "string" },
+        "s2_business_moat": { "type": "string" },
+        "s3_valuation": { "type": "string" },
+        "s4_margin_of_safety": { "type": "string" },
+        "s5_risks": { "type": "string" },
+        "s6_verdict": { "type": "string" },
+        "s7_advice_discussion": { "type": "string" }
+      }
+    },
+    "fair_value_range": {
+      "type": "object",
+      "required": ["low", "base", "high"],
+      "properties": {
+        "low": { "type": "number" },
+        "base": { "type": "number" },
+        "high": { "type": "number" },
+        "as_of": { "type": "string", "format": "date" }
+      }
+    },
+    "current_price": { "type": "number" },
+    "price_position": { "type": "string" },
+    "thesis_hinges_on": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "description": "The one or two things that must be true for the current price to make sense. Usually the real thesis in disguise.",
+      "items": { "type": "string" }
+    },
+    "invalidation_triggers": {
+      "type": "array",
+      "minItems": 2,
+      "description": "Copied from BearCase.kill_criteria. This is what makes the record a tracked position rather than a filed report.",
+      "items": {
+        "type": "object",
+        "required": ["trigger", "threshold", "check_frequency", "status"],
+        "properties": {
+          "trigger": { "type": "string" },
+          "threshold": { "type": "string" },
+          "check_frequency": { "type": "string" },
+          "status": { "type": "string", "enum": ["not_triggered", "approaching", "triggered"] },
+          "last_checked": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "evidence_manifest": {
+      "type": "array",
+      "description": "Full list of evidence ids backing this record, so a future review can tell what was known at authoring time.",
+      "items": { "type": "string" }
+    },
+    "notion": {
+      "type": "object",
+      "properties": {
+        "page_id": { "type": "string" },
+        "url": { "type": "string" },
+        "parent_data_source": { "type": "string" }
+      }
+    }
+  }
+}

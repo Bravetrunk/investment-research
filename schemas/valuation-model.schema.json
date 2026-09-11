@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "valuation-model.schema.json",
+  "title": "ValuationModel",
+  "description": "Assumptions are authored by the agent; outputs are computed by the deterministic calculator in pipeline/. The agent MUST NOT write the output fields itself.",
+  "type": "object",
+  "required": ["ticker", "inputs", "dcf", "graham", "relative", "computed_by"],
+  "properties": {
+    "ticker": { "type": "string" },
+    "computed_by": { "type": "string", "enum": ["calculator"], "description": "Rejected by G3 if any other value. LLM arithmetic is not reproducible." },
+    "inputs": {
+      "type": "object",
+      "required": ["eps_used", "eps_basis", "fcf_base", "shares_diluted", "current_price"],
+      "properties": {
+        "eps_used": { "type": "number" },
+        "eps_basis": { "type": "string", "enum": ["headline", "adjusted"], "description": "Must be 'adjusted' whenever distortion_found is true." },
+        "fcf_base": { "type": "number" },
+        "fcf_basis": { "type": "string", "enum": ["ttm_actual", "normalized", "projected_recovery"] },
+        "shares_diluted": { "type": "number" },
+        "book_value_per_share": { "type": "number" },
+        "current_price": { "type": "number" },
+        "net_cash": { "type": "number" }
+      }
+    },
+    "dcf": {
+      "type": "object",
+      "required": ["cases", "terminal_growth_rate", "projection_years"],
+      "properties": {
+        "projection_years": { "type": "integer", "minimum": 5, "maximum": 10 },
+        "terminal_growth_rate": {
+          "type": "number",
+          "maximum": 0.03,
+          "description": "Must sit below long-run GDP growth. Values above 3% are rejected."
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "required": ["case", "fcf_growth_rate", "discount_rate", "rationale"],
+            "properties": {
+              "case": { "type": "string", "enum": ["low", "base", "high"] },
+              "fcf_growth_rate": { "type": "number" },
+              "fcf_trajectory": {
+                "type": "array",
+                "description": "Required when fcf_basis is projected_recovery: explicit per-year FCF path out of the capex cycle.",
+                "items": { "type": "number" }
+              },
+              "discount_rate": { "type": "number" },
+              "rationale": { "type": "string", "description": "Why these numbers and not others. An assumption without a reason is a guess." },
+              "fair_value_per_share": { "type": "number", "description": "COMPUTED. Do not author." }
+            }
+          }
+        }
+      }
+    },
+    "graham": {
+      "type": "object",
+      "properties": {
+        "graham_number": { "type": ["number", "null"], "description": "COMPUTED as sqrt(22.5 * adjusted EPS * BVPS)." },
+        "applicability": {
+          "type": "string",
+          "enum": ["meaningful", "low_weight_asset_light", "not_applicable_negative_inputs"],
+          "description": "For high-ROE asset-light businesses this lands far below price. Say so and weight it low rather than treating it as a ceiling."
+        }
+      }
+    },
+    "relative": {
+      "type": "object",
+      "properties": {
+        "multiples": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "metric": { "type": "string" },
+              "current": { "type": "number" },
+              "own_5y_range": { "type": "string" },
+              "peer_median": { "type": ["number", "null"] },
+              "premium_discount_justification": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "price_position": {
+      "type": "string",
+      "enum": ["below_low_deep_discount", "between_low_and_base", "at_base_fair", "between_base_and_high_optimistic", "above_high_bull_case_priced"],
+      "description": "COMPUTED from the DCF range and current price."
+    },
+    "reverse_dcf": {
+      "type": "object",
+      "properties": {
+        "current_price": { "type": "number" },
+        "target_equity_value": { "type": "number" },
+        "target_enterprise_value": { "type": "number" },
+        "implied_fcf_growth_rate": { "type": "number" },
+        "implied_growth_pct": { "type": "string" },
+        "interpretation": { "type": "string" }
+      }
+    },
+    "sotp": {
+      "type": "object",
+      "properties": {
+        "segments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "metric_type", "metric_value", "multiple"],
+            "properties": {
+              "name": { "type": "string" },
+              "metric_type": { "type": "string" },
+              "metric_value": { "type": "number" },
+              "multiple": { "type": "number" },
+              "benchmark_peer": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "sotp_result": { "type": "object" },
+    "sensitivity_matrix": { "type": "object" },
+    "asymmetric_risk_reward": {
+      "type": "object",
+      "properties": {
+        "reward_to_risk_ratio": { "type": ["number", "null"] },
+        "qualifies_3_to_1": { "type": "boolean" },
+        "hurdle_verdict": { "type": "string" }
+      }
+    },
+    "forensic": { "type": "object" },
+    "forensic_result": { "type": "object" }
+  }
+}

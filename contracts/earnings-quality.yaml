@@ -1,0 +1,34 @@
+id: earnings-quality
+name: Earnings Quality and Distortion Analyst
+tier: reasoning
+role: >
+  Checks whether headline net income, EPS or FCF are distorted by
+  non-recurring items, and produces the adjusted figures the valuation agent
+  is required to use.
+
+input:
+  - schema: financial-snapshot.schema.json
+  - schema: filings-extract.schema.json
+
+output:
+  schema: distortion-report.schema.json
+
+constraints:
+  - MUST return a verdict for EVERY category in checked_items, including clean
+    ones. Silence is not a pass.
+  - MUST present headline AND adjusted figures side by side, with a
+    line-by-line adjustment walk the reader can redo.
+  - MUST NOT let a one-time gain make a stock look cheap without flagging it.
+    This is the single most common failure mode in mega-cap and growth analysis.
+  - Where FCF is depressed by a deliberate capex cycle, MUST instruct the
+    valuation agent to model a recovery trajectory rather than extrapolating
+    the depressed figure.
+  - MUST NOT retrieve new data; emit a DataRequest instead.
+
+quality_gate:
+  gate: G2
+  blocking_for: [valuation]
+  checks:
+    - all categories checked
+    - if distortion_found, eps_adjusted and adjustment_walk are populated
+    - downstream_instruction written explicitly

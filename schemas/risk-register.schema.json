@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "risk-register.schema.json",
+  "title": "RiskRegister",
+  "type": "object",
+  "required": ["ticker", "risks"],
+  "properties": {
+    "ticker": { "type": "string" },
+    "risks": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["category", "mechanism", "likelihood", "impact"],
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": ["capex_fcf", "customer_concentration", "segment_concentration", "regulatory_antitrust", "leverage", "technological_disruption", "cyclicality", "fx_geopolitical", "key_person", "accounting"]
+          },
+          "mechanism": {
+            "type": "string",
+            "description": "Company-specific causal path. Generic risk boilerplate is rejected at review."
+          },
+          "likelihood": { "type": "string", "enum": ["high", "medium", "low"] },
+          "impact": { "type": "string", "enum": ["severe", "moderate", "limited"] },
+          "leading_indicator": { "type": "string", "description": "What you would see first if this started happening." },
+          "evidence_ref": { "type": "string" }
+        }
+      }
+    }
+  }
+}

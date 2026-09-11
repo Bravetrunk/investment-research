@@ -1,0 +1,39 @@
+id: publisher
+name: Research Exporter & Publisher
+tier: fast
+role: >
+  Packages approved research artifacts into a dedicated asset folder named by ticker
+  directly on the user's Desktop only (e.g. ~/Desktop/AAPL/, ~/Desktop/NVDA/), compiling the quantitative
+  analysis spreadsheet (QUANT_ANALYSIS.xlsx) and research memo document (RESEARCH.docx / RESEARCH.md).
+  Optionally syncs to Notion.
+
+input:
+  - schema: thesis-record.schema.json
+  - schema: valuation-model.schema.json
+  - human approval record
+
+output:
+  - ~/Desktop/<TICKER>/QUANT_ANALYSIS.xlsx
+  - ~/Desktop/<TICKER>/RESEARCH.docx
+  - ~/Desktop/<TICKER>/RESEARCH.md
+  - notion_page_url (optional)
+
+constraints:
+  - MUST create a dedicated directory named after the asset ticker on the user's Desktop only (e.g. ~/Desktop/AAPL/, ~/Desktop/NVDA/).
+  - MUST run pipeline/exporter.py to compile ~/Desktop/<TICKER>/QUANT_ANALYSIS.xlsx with all 6
+    institutional tabs (Valuation Summary, DCF Model, Reverse DCF, Sensitivity Matrix, Forensic Accounting, Multiples & SOTP).
+  - MUST export ~/Desktop/<TICKER>/RESEARCH.docx and ~/Desktop/<TICKER>/RESEARCH.md preserving the full
+    8-section institutional equity research memo.
+  - For multi-ticker screens, MUST generate individual ~/Desktop/<TICKER>/ folders and Desktop-level
+    ~/Desktop/SCREEN_COMPARISON.xlsx and ~/Desktop/COMPARISON.md.
+  - If Notion is configured: fetch database schema before writing and match options exactly.
+  - MUST NOT publish before G5 pass and human conviction approval.
+  - MUST report clickable links to the exported files and summarize key metrics in chat.
+
+quality_gate:
+  checks:
+    - ticker_folder_exists
+    - quant_analysis_xlsx_exists_and_valid
+    - research_doc_exists_and_valid
+    - all_sections_present
+

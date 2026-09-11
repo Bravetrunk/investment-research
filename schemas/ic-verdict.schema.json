@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "ic-verdict.schema.json",
+  "title": "InvestmentCommitteeVerdict",
+  "description": "Formal institutional verdict issued by the Chief Investment Officer and Investment Committee.",
+  "type": "object",
+  "required": [
+    "ticker",
+    "committee_verdict",
+    "conviction_tier",
+    "hurdle_assessment",
+    "passing_rationale",
+    "position_sizing_mandate",
+    "timestamp"
+  ],
+  "properties": {
+    "ticker": { "type": "string" },
+    "committee_verdict": {
+      "type": "string",
+      "enum": ["APPROVED_LONG", "APPROVED_TACTICAL", "VALIDATION_HOLD", "PASSED_STRICT_DISCIPLINE", "VETOED_BY_RISK"]
+    },
+    "conviction_tier": {
+      "type": "string",
+      "enum": ["High 🔥🔥🔥", "Medium 🔥🔥", "Low 🔥", "Validation", "🚫 Passed"]
+    },
+    "target_fair_value": { "type": "number" },
+    "hurdle_assessment": {
+      "type": "object",
+      "required": ["asymmetric_reward_to_risk_ratio", "passes_3_to_1_hurdle", "economic_profit_roic_exceeds_wacc"],
+      "properties": {
+        "asymmetric_reward_to_risk_ratio": { "type": "number" },
+        "passes_3_to_1_hurdle": { "type": "boolean" },
+        "economic_profit_roic_exceeds_wacc": { "type": "boolean" },
+        "fcf_positive_and_converting": { "type": "boolean" }
+      }
+    },
+    "passing_rationale": {
+      "type": ["string", "null"],
+      "description": "Required when verdict is PASSED_STRICT_DISCIPLINE. Detailed institutional justification (e.g. commodity cycle trap like MU, multiple compression + surgical robot competition like ISRG, excessive leverage like EQIX)."
+    },
+    "position_sizing_mandate": {
+      "type": "object",
+      "required": ["suggested_portfolio_weight_pct", "max_loss_budget_pct", "kelly_fraction_recommendation"],
+      "properties": {
+        "suggested_portfolio_weight_pct": { "type": "number" },
+        "max_loss_budget_pct": { "type": "number" },
+        "kelly_fraction_recommendation": { "type": "string" }
+      }
+    },
+    "key_invalidation_triggers": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "committee_members_signed": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "timestamp": { "type": "string" }
+  }
+}

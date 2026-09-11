@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "verification-report.schema.json",
+  "title": "VerificationReport",
+  "description": "Gate G5 artifact. The verifier is the only agent with authority to block publication.",
+  "type": "object",
+  "required": ["ticker", "verdict", "numbers_checked", "unsourced_numbers", "stale_evidence"],
+  "properties": {
+    "ticker": { "type": "string" },
+    "verdict": { "type": "string", "enum": ["pass", "fail", "pass_with_flags"] },
+    "numbers_checked": { "type": "integer" },
+    "unsourced_numbers": {
+      "type": "array",
+      "description": "Any entry here forces verdict=fail. No exceptions, no 'close enough'.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value_as_written": { "type": "string" },
+          "location": { "type": "string" },
+          "issue": { "type": "string", "enum": ["no_evidence_ref", "ref_not_found", "value_mismatch", "missing_fiscal_period"] }
+        }
+      }
+    },
+    "stale_evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "evidence_id": { "type": "string" },
+          "fiscal_period": { "type": "string" },
+          "issue": { "type": "string", "description": "e.g. 'aggregator figure predates the 2026-07-30 earnings release'" }
+        }
+      }
+    },
+    "arithmetic_recheck": {
+      "type": "object",
+      "properties": {
+        "recomputed": { "type": "boolean" },
+        "mismatches": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "consistency_flags": {
+      "type": "array",
+      "description": "Cross-artifact contradictions, e.g. the moat verdict says 'wide' while the risk register says the moat is eroding.",
+      "items": { "type": "string" }
+    }
+  }
+}

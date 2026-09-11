@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "distortion-report.schema.json",
+  "title": "DistortionReport",
+  "description": "Gate G2 artifact. Blocks the valuation agent until headline earnings have been checked for non-recurring distortion. This is the single most common way a superficial multiples read goes badly wrong.",
+  "type": "object",
+  "required": ["ticker", "checked_items", "distortion_found", "adjusted"],
+  "properties": {
+    "ticker": { "type": "string" },
+    "checked_items": {
+      "type": "array",
+      "description": "Every category must appear with a verdict, even when clean. Silence is not a pass.",
+      "minItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["category", "present", "evidence_ref"],
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": ["unrealized_equity_stake_gains", "one_time_tax_charge", "litigation_settlement", "restructuring_severance", "asset_sale_gain", "impairment", "deliberate_capex_cycle", "stock_comp_anomaly", "other"]
+          },
+          "present": { "type": "boolean" },
+          "amount": { "type": ["number", "null"] },
+          "direction": { "type": "string", "enum": ["inflates_earnings", "depresses_earnings", "depresses_fcf", "none"] },
+          "evidence_ref": { "type": "string" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "distortion_found": { "type": "boolean" },
+    "adjusted": {
+      "type": "object",
+      "required": ["eps_headline", "eps_adjusted", "adjustment_walk"],
+      "properties": {
+        "eps_headline": { "type": "number" },
+        "eps_adjusted": { "type": ["number", "null"] },
+        "adjustment_walk": {
+          "type": "array",
+          "description": "Line-by-line bridge from headline to adjusted. Reader must be able to redo the arithmetic.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item": { "type": "string" },
+              "eps_impact": { "type": "number" }
+            }
+          }
+        },
+        "pe_headline": { "type": ["number", "null"] },
+        "pe_adjusted": { "type": ["number", "null"] },
+        "fcf_normalized": { "type": ["number", "null"] },
+        "fcf_note": {
+          "type": "string",
+          "description": "If FCF is depressed by a deliberate capex cycle, say so here and require the valuation agent to model a recovery trajectory rather than extrapolating depressed FCF."
+        }
+      }
+    },
+    "downstream_instruction": {
+      "type": "string",
+      "description": "Explicit directive to the valuation agent, e.g. 'use eps_adjusted=6.12 for Graham and relative valuation; headline 9.40 includes a one-time stake gain.'"
+    }
+  }
+}

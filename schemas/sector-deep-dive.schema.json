@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "sector-deep-dive.schema.json",
+  "title": "SectorSpecialistDeepDive",
+  "description": "Deep domain analysis authored by institutional sector specialists.",
+  "type": "object",
+  "required": [
+    "ticker",
+    "sector_vertical",
+    "technology_architecture_moat",
+    "unit_economics_and_bom",
+    "customer_concentration_and_switching_costs",
+    "backlog_and_pipeline_visibility",
+    "peer_competitive_positioning"
+  ],
+  "properties": {
+    "ticker": { "type": "string" },
+    "sector_vertical": {
+      "type": "string",
+      "enum": [
+        "Semiconductors & Compute Architecture",
+        "Power, Energy & Data Infrastructure",
+        "Hyperscale Cloud & Enterprise Platforms",
+        "Fintech, Stablecoin & Agentic Rails",
+        "Industrial Automation, Robotics & Physical AI",
+        "Defense, Aerospace & Critical Tech"
+      ]
+    },
+    "technology_architecture_moat": {
+      "type": "object",
+      "required": ["moat_rating", "core_tech_differentiation", "obsolescence_threat"],
+      "properties": {
+        "moat_rating": { "type": "string", "enum": ["Wide", "Narrow", "None / Eroding"] },
+        "core_tech_differentiation": { "type": "string" },
+        "software_ecosystem_stickiness": { "type": "string" },
+        "obsolescence_threat": { "type": "string" }
+      }
+    },
+    "unit_economics_and_bom": {
+      "type": "object",
+      "properties": {
+        "gross_margin_durability": { "type": "string" },
+        "bom_cost_deflation_exposure": { "type": "string" },
+        "pricing_power_score": { "type": "integer", "minimum": 1, "maximum": 10 }
+      }
+    },
+    "customer_concentration_and_switching_costs": {
+      "type": "object",
+      "required": ["top_5_customer_concentration_pct", "switching_cost_barrier"],
+      "properties": {
+        "top_5_customer_concentration_pct": { "type": "number" },
+        "switching_cost_barrier": { "type": "string", "enum": ["Prohibitive / Mission-Critical", "Moderate", "Low / Commodity Substitution"] }
+      }
+    },
+    "backlog_and_pipeline_visibility": {
+      "type": "object",
+      "required": ["book_to_bill_ratio", "backlog_coverage_years"],
+      "properties": {
+        "backlog_millions": { "type": ["number", "null"] },
+        "book_to_bill_ratio": { "type": ["number", "null"] },
+        "backlog_coverage_years": { "type": ["number", "null"] },
+        "cancellation_penalty_strength": { "type": "string" }
+      }
+    },
+    "peer_competitive_positioning": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "peer_ticker": { "type": "string" },
+          "advantage_over_peer": { "type": "string" },
+          "vulnerability_to_peer": { "type": "string" }
+        }
+      }
+    }
+  }
+}

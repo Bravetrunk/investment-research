@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "candidate-list.schema.json",
+  "title": "CandidateList",
+  "description": "Output of the screener. Fans out into one research branch per ticker.",
+  "type": "object",
+  "required": ["theme", "candidates", "generated_at"],
+  "properties": {
+    "theme": { "type": "string", "description": "e.g. 'liquid cooling / data center thermal management'" },
+    "thesis_sketch": { "type": "string", "description": "Why this theme could produce mispricing at all. One paragraph." },
+    "candidates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["ticker", "name", "inclusion_reason", "exposure_type"],
+        "properties": {
+          "ticker": { "type": "string" },
+          "name": { "type": "string" },
+          "exchange": { "type": "string" },
+          "inclusion_reason": { "type": "string" },
+          "exposure_type": {
+            "type": "string",
+            "enum": ["pure_play", "major_segment", "minor_segment", "picks_and_shovels", "second_order"],
+            "description": "Guards against the classic screen error of putting a mega-cap with 3% theme revenue next to a pure play."
+          },
+          "estimated_theme_revenue_share": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "excluded": {
+      "type": "array",
+      "description": "Named exclusions with reasons. A screen without these is not auditable.",
+      "items": {
+        "type": "object",
+        "required": ["ticker", "exclusion_reason"],
+        "properties": {
+          "ticker": { "type": "string" },
+          "exclusion_reason": { "type": "string" }
+        }
+      }
+    },
+    "generated_at": { "type": "string", "format": "date-time" }
+  }
+}

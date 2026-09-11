@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "evidence-item.schema.json",
+  "title": "EvidenceItem",
+  "description": "The atomic unit of the system. Every number that appears anywhere downstream MUST trace back to one of these. Analyst agents may read these but never create them.",
+  "type": "object",
+  "required": ["id", "metric", "value", "fiscal_period", "source_url", "source_type", "retrieved_at"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^ev_[a-z0-9_]+$" },
+    "ticker": { "type": "string" },
+    "metric": {
+      "type": "string",
+      "description": "Canonical metric key, e.g. revenue_ttm, fcf_ttm, shares_diluted, book_value_per_share"
+    },
+    "value": { "type": ["number", "string"] },
+    "unit": {
+      "type": "string",
+      "enum": ["USD", "USD_millions", "USD_billions", "THB", "shares", "ratio", "percent", "text"]
+    },
+    "fiscal_period": {
+      "type": "string",
+      "description": "REQUIRED. e.g. FY2025, Q3-FY2026, TTM-2026-06-30. Never omit; a number without a period is unusable.",
+      "pattern": "^(FY[0-9]{4}|Q[1-4]-FY[0-9]{4}|TTM-[0-9]{4}-[0-9]{2}-[0-9]{2}|SPOT-[0-9]{4}-[0-9]{2}-[0-9]{2})$"
+    },
+    "source_url": { "type": "string", "format": "uri" },
+    "source_type": {
+      "type": "string",
+      "enum": ["10-K", "10-Q", "8-K", "earnings_release", "investor_relations", "transcript", "aggregator", "news", "market_data"],
+      "description": "Primary sources rank above aggregators. Verifier downgrades confidence for aggregator-only figures on the current-quarter story."
+    },
+    "retrieved_at": { "type": "string", "format": "date-time" },
+    "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+    "note": { "type": "string", "description": "e.g. 'aggregator lags one quarter behind the 2026-07-30 release'" }
+  },
+  "additionalProperties": false
+}

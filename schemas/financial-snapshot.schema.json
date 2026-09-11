@@ -1,0 +1,132 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "financial-snapshot.schema.json",
+  "title": "FinancialSnapshot",
+  "description": "Assembled by data agents from EvidenceItems. Every leaf value is an evidence_ref, not a raw number. Gate G1 checks completeness and freshness against this schema.",
+  "type": "object",
+  "required": ["ticker", "as_of", "price_and_size", "latest_quarter", "ttm", "balance_sheet", "cash_flow", "valuation_multiples"],
+  "definitions": {
+    "ref": {
+      "type": "object",
+      "required": ["evidence_id", "value"],
+      "properties": {
+        "evidence_id": { "type": "string", "pattern": "^ev_[a-z0-9_]+$" },
+        "value": { "type": ["number", "string", "null"] },
+        "unavailable_reason": {
+          "type": "string",
+          "description": "If value is null this is REQUIRED. 'Not found' stated honestly beats an estimated number."
+        }
+      }
+    }
+  },
+  "properties": {
+    "ticker": { "type": "string" },
+    "as_of": { "type": "string", "format": "date" },
+    "price_and_size": {
+      "type": "object",
+      "required": ["price", "shares_diluted", "market_cap"],
+      "properties": {
+        "price": { "$ref": "#/definitions/ref" },
+        "shares_diluted": { "$ref": "#/definitions/ref" },
+        "market_cap": { "$ref": "#/definitions/ref" },
+        "enterprise_value": { "$ref": "#/definitions/ref" }
+      }
+    },
+    "latest_quarter": {
+      "type": "object",
+      "required": ["period_label", "revenue", "revenue_yoy", "net_income", "eps_headline"],
+      "properties": {
+        "period_label": { "type": "string" },
+        "revenue": { "$ref": "#/definitions/ref" },
+        "revenue_yoy": { "$ref": "#/definitions/ref" },
+        "net_income": { "$ref": "#/definitions/ref" },
+        "eps_headline": { "$ref": "#/definitions/ref" },
+        "vs_consensus": { "$ref": "#/definitions/ref" },
+        "guidance": { "$ref": "#/definitions/ref" }
+      }
+    },
+    "ttm": {
+      "type": "object",
+      "required": ["revenue", "net_income", "gross_margin", "operating_margin", "net_margin"],
+      "properties": {
+        "revenue": { "$ref": "#/definitions/ref" },
+        "net_income": { "$ref": "#/definitions/ref" },
+        "gross_margin": { "$ref": "#/definitions/ref" },
+        "operating_margin": { "$ref": "#/definitions/ref" },
+        "net_margin": { "$ref": "#/definitions/ref" },
+        "roe": { "$ref": "#/definitions/ref" },
+        "roic": { "$ref": "#/definitions/ref" }
+      }
+    },
+    "balance_sheet": {
+      "type": "object",
+      "required": ["cash", "total_debt", "net_cash_position", "book_value_per_share"],
+      "properties": {
+        "cash": { "$ref": "#/definitions/ref" },
+        "total_debt": { "$ref": "#/definitions/ref" },
+        "net_cash_position": { "$ref": "#/definitions/ref" },
+        "current_ratio": { "$ref": "#/definitions/ref" },
+        "debt_to_equity": { "$ref": "#/definitions/ref" },
+        "book_value_per_share": { "$ref": "#/definitions/ref" }
+      }
+    },
+    "cash_flow": {
+      "type": "object",
+      "required": ["operating_cash_flow_ttm", "capex_ttm", "fcf_ttm"],
+      "properties": {
+        "operating_cash_flow_ttm": { "$ref": "#/definitions/ref" },
+        "capex_ttm": { "$ref": "#/definitions/ref" },
+        "fcf_ttm": { "$ref": "#/definitions/ref" },
+        "fcf_latest_quarter": { "$ref": "#/definitions/ref" },
+        "divergence_note": {
+          "type": "string",
+          "description": "Flag when TTM and latest-quarter FCF diverge, e.g. a capex spike. Feeds the valuation agent's trajectory assumption."
+        }
+      }
+    },
+    "valuation_multiples": {
+      "type": "object",
+      "required": ["pe_trailing", "pe_forward", "price_to_book"],
+      "properties": {
+        "pe_trailing": { "$ref": "#/definitions/ref" },
+        "pe_forward": { "$ref": "#/definitions/ref" },
+        "peg": { "$ref": "#/definitions/ref" },
+        "ev_ebitda": { "$ref": "#/definitions/ref" },
+        "ev_fcf": { "$ref": "#/definitions/ref" },
+        "price_to_book": { "$ref": "#/definitions/ref" },
+        "own_historical_range": {
+          "type": "string",
+          "description": "The company's own 5y range for the key multiple. Multiples without this context are close to meaningless."
+        }
+      }
+    },
+    "capital_return": {
+      "type": "object",
+      "properties": {
+        "dividend_yield": { "$ref": "#/definitions/ref" },
+        "buyback_ttm": { "$ref": "#/definitions/ref" }
+      }
+    },
+    "analyst_context": {
+      "type": "object",
+      "properties": {
+        "avg_price_target": { "$ref": "#/definitions/ref" },
+        "consensus_rating": { "$ref": "#/definitions/ref" }
+      }
+    },
+    "growth_drivers": {
+      "type": "array",
+      "maxItems": 3,
+      "description": "The 1-2 segments actually driving the current story, e.g. 'Cloud +82%'. Not a segment dump.",
+      "items": {
+        "type": "object",
+        "required": ["segment", "metric"],
+        "properties": {
+          "segment": { "type": "string" },
+          "metric": { "$ref": "#/definitions/ref" },
+          "commentary": { "type": "string" }
+        }
+      }
+    }
+  }
+}

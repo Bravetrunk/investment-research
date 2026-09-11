@@ -1,0 +1,31 @@
+id: forensic-accounting
+name: Forensic Accounting & Earnings Quality Auditor
+tier: reasoning
+role: >
+  Audits financial statements for accounting distortions, earnings manipulation risks,
+  accrual anomalies, and hidden dilution. Computes the 8-variable Beneish M-Score,
+  Sloan Accrual Ratio, Stock-Based Compensation economic dilution bridge, and
+  working capital red flags (DSO spikes, unbilled receivables, inventory accumulation).
+
+input:
+  - schema: financial-snapshot.schema.json
+  - schema: filings-extract.schema.json
+
+output:
+  schema: forensic-report.schema.json
+
+constraints:
+  - MUST compute the Beneish M-Score using all 8 sub-indices (DSRI, GMI, AQI, SGI, DEPI, SGAI, TATA, LVGI)
+    against the -1.78 manipulator threshold.
+  - MUST compute the Sloan Accrual Ratio ((Net Income - CFO) / Avg Assets) and flag ratios outside [-0.10, +0.10].
+  - MUST construct a true economic EPS bridge adjusting for real Stock-Based Compensation dilution.
+  - MUST audit working capital for channel stuffing, unbilled receivables, and inventory accumulation.
+  - MUST evaluate debt maturity walls and Net Debt / EBITDA leverage ratios (flagging > 4.0x as excessive).
+  - MUST issue a clear verdict: CLEAN_INVESTMENT_GRADE, QUALIFIED_NORMALIZED_ADJUSTMENT,
+    SUSPICIOUS_EARNINGS_DISTORTION, or FATAL_ACCOUNTING_RED_FLAG.
+
+quality_gate:
+  checks:
+    - beneish_m_score computed with all 8 indices
+    - sloan_accrual_analysis complete with numeric ratio
+    - stock_based_compensation_audit contains non-empty economic_eps_bridge

@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "regulatory-geopolitical-assessment.schema.json",
+  "title": "RegulatoryAndGeopoliticalAssessment",
+  "description": "Institutional assessment of regulatory, antitrust, export control, litigation, and sovereign geopolitical exposure.",
+  "type": "object",
+  "required": [
+    "ticker",
+    "antitrust_scrutiny_risk",
+    "export_control_and_sanctions_exposure",
+    "patent_and_ip_litigation_status",
+    "government_contract_dependency",
+    "geopolitical_risk_verdict"
+  ],
+  "properties": {
+    "ticker": { "type": "string" },
+    "antitrust_scrutiny_risk": {
+      "type": "object",
+      "required": ["risk_level", "active_proceedings", "breakup_or_behavioral_risk"],
+      "properties": {
+        "risk_level": { "type": "string", "enum": ["Critical / Existential", "Active Scrutiny / Fines", "Low / Negligible"] },
+        "active_proceedings": { "type": "array", "items": { "type": "string" } },
+        "breakup_or_behavioral_risk": { "type": "string" }
+      }
+    },
+    "export_control_and_sanctions_exposure": {
+      "type": "object",
+      "required": ["china_revenue_exposure_pct", "bis_entity_list_vulnerability", "taiwan_strait_fragility"],
+      "properties": {
+        "china_revenue_exposure_pct": { "type": "number" },
+        "bis_entity_list_vulnerability": { "type": "string" },
+        "taiwan_strait_fragility": { "type": "string", "enum": ["High Direct Exposure (Fab Concentration)", "Moderate Indirect", "Insulated / Domestic Supply"] }
+      }
+    },
+    "patent_and_ip_litigation_status": {
+      "type": "object",
+      "properties": {
+        "material_litigation_pending": { "type": "boolean" },
+        "ip_moat_durability": { "type": "string" },
+        "recent_court_rulings": { "type": "string" }
+      }
+    },
+    "government_contract_dependency": {
+      "type": "object",
+      "properties": {
+        "govt_revenue_pct": { "type": "number" },
+        "program_of_record_status": { "type": "string" },
+        "defense_budget_appropriation_support": { "type": "string" }
+      }
+    },
+    "geopolitical_risk_verdict": {
+      "type": "string",
+      "enum": ["BENIGN_REGULATORY_ENVIRONMENT", "MANAGEABLE_POLICY_OVERHEAD", "ELEVATED_GEOPOLITICAL_HEADWIND", "SEVERE_REGULATORY_IMPAIRMENT"]
+    }
+  }
+}

@@ -1,0 +1,32 @@
+id: macro-thematic
+name: Macro & Value Chain Thematic Strategist
+tier: reasoning
+role: >
+  Evaluates global macroeconomic capital cycles, hyperscale capex inflections, power
+  and resource constraints, and value chain bottlenecks. Grounded firmly in the
+  5 Master Theses (Liquid Cooling & Water Infra, Agentic Payments M2M Rails, Physical AI
+  & Robotics, Local AI vs Cloud AI Routing, and Allied Rearmament GARP). Determines
+  whether the company captures high-margin bottleneck rents or faces commoditization.
+
+input:
+  - schema: financial-snapshot.schema.json
+  - schema: filings-extract.schema.json
+  - optional: theme_description
+
+output:
+  schema: macro-thematic-assessment.schema.json
+
+constraints:
+  - MUST classify company into one of the 5 Master Investment Theses or Cross-Thematic.
+  - MUST evaluate the value chain tier: Physical Bottleneck, Tollbooth Platform, High-Margin
+    Component Specialist, OEM Integrator, or Commoditized Merchant Supplier.
+  - MUST score the Bottleneck Monopoly Moat (1-10) with explicit physical/economic justification.
+  - MUST evaluate power (MW), water consumption intensity, and grid interconnection risks
+    where applicable to AI data center and industrial footprints.
+  - MUST address circular financing risks in hyperscale and venture AI ecosystems.
+
+quality_gate:
+  checks:
+    - primary_macro_theme assigned from valid enum
+    - bottleneck_monopoly_score between 1 and 10 with written rationale
+    - value_chain_tier explicitly identified

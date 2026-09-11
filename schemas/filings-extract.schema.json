@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "filings-extract.schema.json",
+  "title": "FilingsExtract",
+  "description": "Verbatim-anchored passages pulled from primary filings. The filings agent extracts and locates; it does not interpret.",
+  "type": "object",
+  "required": ["ticker", "documents", "extracts"],
+  "properties": {
+    "ticker": { "type": "string" },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["doc_type", "fiscal_period", "url", "filed_date"],
+        "properties": {
+          "doc_type": { "type": "string", "enum": ["10-K", "10-Q", "8-K", "earnings_release", "transcript", "investor_deck"] },
+          "fiscal_period": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "filed_date": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "extracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["topic", "summary", "source_url", "section"],
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": ["revenue_recognition", "segment_detail", "one_time_items", "capex_plan", "customer_concentration", "risk_factors", "litigation", "share_count", "management_commentary", "other"]
+          },
+          "summary": {
+            "type": "string",
+            "description": "Paraphrase in the agent's own words. Quote at most one short phrase where exact wording carries legal or accounting weight."
+          },
+          "section": { "type": "string", "description": "e.g. 'Item 7 MD&A', 'Note 12 Income Taxes'" },
+          "source_url": { "type": "string", "format": "uri" },
+          "material_flag": { "type": "boolean", "description": "True if this should force a downstream agent to look. Earnings-quality agent must read every material_flag extract." }
+        }
+      }
+    }
+  }
+}

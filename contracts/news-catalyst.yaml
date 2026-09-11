@@ -1,0 +1,25 @@
+id: news-catalyst
+name: News and Catalyst Tracker
+tier: fast
+role: >
+  Builds a dated event timeline and a forward catalyst calendar.
+
+input:
+  - ticker
+  - lookback_window (default 12 months)
+
+output:
+  schema: news-timeline.schema.json
+
+constraints:
+  - MUST separate confirmed from reported from rumoured. Collapsing these is
+    how a rumour becomes a thesis input.
+  - MUST reword headlines rather than copying them.
+  - MUST NOT infer price impact or make directional calls.
+  - Low-quality forums and promotional sites are excluded.
+
+quality_gate:
+  gate: G1
+  checks:
+    - every event dated and sourced
+    - status assigned to every event

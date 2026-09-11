@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "news-timeline.schema.json",
+  "title": "NewsTimeline",
+  "description": "Dated catalysts and events. Ordered, sourced, and explicitly separated into confirmed vs rumoured.",
+  "type": "object",
+  "required": ["ticker", "window", "events"],
+  "properties": {
+    "ticker": { "type": "string" },
+    "window": {
+      "type": "object",
+      "properties": {
+        "from": { "type": "string", "format": "date" },
+        "to": { "type": "string", "format": "date" }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["date", "headline", "source_url", "status", "relevance"],
+        "properties": {
+          "date": { "type": "string", "format": "date" },
+          "headline": { "type": "string", "description": "Reworded, not copied from the source." },
+          "source_url": { "type": "string", "format": "uri" },
+          "status": { "type": "string", "enum": ["confirmed", "reported", "rumoured", "speculative"] },
+          "relevance": { "type": "string", "enum": ["thesis_critical", "material", "background"] },
+          "affects": {
+            "type": "array",
+            "items": { "type": "string", "enum": ["revenue", "margins", "capex", "regulation", "competition", "capital_structure", "management"] }
+          }
+        }
+      }
+    },
+    "upcoming_catalysts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["expected_date", "event"],
+        "properties": {
+          "expected_date": { "type": "string" },
+          "event": { "type": "string" },
+          "why_it_matters": { "type": "string" }
+        }
+      }
+    }
+  }
+}

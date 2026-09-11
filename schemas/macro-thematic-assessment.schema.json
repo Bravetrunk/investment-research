@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "macro-thematic-assessment.schema.json",
+  "title": "MacroThematicAssessment",
+  "description": "Macroeconomic capital cycle and value chain bottleneck analysis grounded in the 5 Master Investment Theses.",
+  "type": "object",
+  "required": [
+    "ticker",
+    "primary_macro_theme",
+    "value_chain_tier",
+    "bottleneck_monopoly_score",
+    "capex_cycle_phase",
+    "power_and_resource_constraint_exposure",
+    "thesis_alignment_analysis"
+  ],
+  "properties": {
+    "ticker": { "type": "string" },
+    "primary_macro_theme": {
+      "type": "string",
+      "enum": [
+        "Liquid Cooling & Water Infrastructure 2026",
+        "Agentic Payment System / Agentic Economy",
+        "Physical AI & Robotics",
+        "Local AI vs Cloud AI 2026",
+        "Defence / Rearmament GARP Screen",
+        "Cross-Thematic Infrastructure",
+        "Non-Thematic / Unaligned"
+      ]
+    },
+    "secondary_themes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "value_chain_tier": {
+      "type": "string",
+      "enum": [
+        "Critical Physical Bottleneck (Highest Moat)",
+        "Tollbooth Platform / Protocol Standard",
+        "High-Margin Component Specialist",
+        "OEM / System Integrator (Margin Vulnerable)",
+        "Commoditized Merchant Supplier (Cycle Trap)"
+      ]
+    },
+    "bottleneck_monopoly_score": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "10 = Absolute monopoly tollbooth (e.g. ASML EUV, TSM CoWoS); 1 = Perfect competition commodity."
+    },
+    "capex_cycle_phase": {
+      "type": "string",
+      "enum": [
+        "Early Capex Ramp (High Multiples, Expanding Bookings)",
+        "Peak Capex Digestion (Risk of Multiple Compression)",
+        "Inflection to FCF Harvesting (Optimal Entry)",
+        "Structural Secular Multi-Year Supercycle"
+      ]
+    },
+    "power_and_resource_constraint_exposure": {
+      "type": "object",
+      "properties": {
+        "direct_power_demand_mw": { "type": ["number", "null"] },
+        "water_intensity_gallons_per_unit": { "type": ["number", "null"] },
+        "grid_interconnection_queue_risk": { "type": "string", "enum": ["Critical Bottleneck", "Manageable", "Immune / Supplier"] }
+      }
+    },
+    "circular_financing_risk": {
+      "type": "string",
+      "description": "Evaluation of whether customer revenues depend on circular tech equity investments or unproven end-market AI monetization."
+    },
+    "thesis_alignment_analysis": {
+      "type": "string",
+      "description": "Detailed strategic evaluation linking the company to the macro thesis value chain."
+    }
+  }
+}

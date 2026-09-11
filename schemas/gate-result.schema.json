@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "gate-result.schema.json",
+  "title": "GateResult",
+  "type": "object",
+  "required": ["gate_id", "task_id", "verdict", "checked_at"],
+  "properties": {
+    "gate_id": { "type": "string", "enum": ["G1", "G2", "G3", "G4", "G5", "HUMAN"] },
+    "task_id": { "type": "string" },
+    "verdict": { "type": "string", "enum": ["pass", "fail", "waived"] },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "check": { "type": "string" },
+          "detail": { "type": "string" },
+          "loop_back_to": { "type": "string", "description": "Agent id the orchestrator should re-run." }
+        }
+      }
+    },
+    "waiver_reason": { "type": "string", "description": "Only a human may waive a gate, and only with a reason recorded here." },
+    "attempt": { "type": "integer", "description": "Orchestrator escalates to human after 3 failed attempts on the same gate." },
+    "checked_at": { "type": "string", "format": "date-time" }
+  }
+}

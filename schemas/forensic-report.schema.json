@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "forensic-report.schema.json",
+  "title": "ForensicAccountingReport",
+  "description": "Comprehensive forensic accounting, Beneish M-Score, Sloan accrual, SBC dilution walk, and balance sheet distress audit.",
+  "type": "object",
+  "required": [
+    "ticker",
+    "audit_timestamp",
+    "beneish_m_score",
+    "sloan_accrual_analysis",
+    "stock_based_compensation_audit",
+    "working_capital_anomalies",
+    "debt_and_liquidity_covenants",
+    "forensic_verdict"
+  ],
+  "properties": {
+    "ticker": { "type": "string" },
+    "audit_timestamp": { "type": "string" },
+    "beneish_m_score": {
+      "type": "object",
+      "required": ["m_score", "is_manipulator_probability_high", "verdict", "indices"],
+      "properties": {
+        "m_score": { "type": "number" },
+        "is_manipulator_probability_high": { "type": "boolean" },
+        "threshold": { "type": "number", "default": -1.78 },
+        "verdict": { "type": "string" },
+        "indices": {
+          "type": "object",
+          "properties": {
+            "dsri": { "type": "number" },
+            "gmi": { "type": "number" },
+            "aqi": { "type": "number" },
+            "sgi": { "type": "number" },
+            "depi": { "type": "number" },
+            "sgai": { "type": "number" },
+            "tata": { "type": "number" },
+            "lvgi": { "type": "number" }
+          }
+        }
+      }
+    },
+    "sloan_accrual_analysis": {
+      "type": "object",
+      "required": ["accrual_ratio", "quality_band"],
+      "properties": {
+        "accrual_ratio": { "type": "number" },
+        "accrual_pct": { "type": "string" },
+        "quality_band": { "type": "string" },
+        "interpretation": { "type": "string" }
+      }
+    },
+    "stock_based_compensation_audit": {
+      "type": "object",
+      "required": ["sbc_ttm_millions", "sbc_as_pct_of_fcf", "dilution_per_annum_pct", "economic_eps_bridge"],
+      "properties": {
+        "sbc_ttm_millions": { "type": "number" },
+        "sbc_as_pct_of_fcf": { "type": "string" },
+        "dilution_per_annum_pct": { "type": "string" },
+        "economic_eps_bridge": { "type": "string", "description": "Bridge from reported Non-GAAP EPS down to true economic EPS after SBC" }
+      }
+    },
+    "working_capital_anomalies": {
+      "type": "object",
+      "properties": {
+        "days_sales_outstanding_trend": { "type": "string" },
+        "days_inventory_outstanding_trend": { "type": "string" },
+        "unbilled_receivables_spike": { "type": "boolean" },
+        "channel_stuffing_warning": { "type": "string" }
+      }
+    },
+    "debt_and_liquidity_covenants": {
+      "type": "object",
+      "required": ["net_debt_to_ebitda", "interest_coverage_ratio", "maturity_wall_risk"],
+      "properties": {
+        "net_debt_to_ebitda": { "type": "number" },
+        "interest_coverage_ratio": { "type": "number" },
+        "maturity_wall_risk": { "type": "string", "enum": ["Low / Fortified", "Moderate", "High / Refinancing Cliff"] },
+        "capital_lease_obligations": { "type": ["number", "null"] }
+      }
+    },
+    "red_flag_register": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "flag_name": { "type": "string" },
+          "severity": { "type": "string", "enum": ["Critical / Fatal", "Material Concern", "Watchlist"] },
+          "evidence_passage": { "type": "string" }
+        }
+      }
+    },
+    "forensic_verdict": {
+      "type": "string",
+      "enum": ["CLEAN_INVESTMENT_GRADE", "QUALIFIED_NORMALIZED_ADJUSTMENT", "SUSPICIOUS_EARNINGS_DISTORTION", "FATAL_ACCOUNTING_RED_FLAG"]
+    }
+  }
+}

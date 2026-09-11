@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "bull-case.schema.json",
+  "title": "BullCase",
+  "type": "object",
+  "required": ["ticker", "core_claim", "required_conditions", "upside_scenario"],
+  "properties": {
+    "ticker": { "type": "string" },
+    "core_claim": { "type": "string", "description": "One sentence: what the market is getting wrong." },
+    "required_conditions": {
+      "type": "array",
+      "minItems": 2,
+      "description": "What must actually be true for the current price to be a bargain. Each must be checkable against a future disclosure.",
+      "items": {
+        "type": "object",
+        "required": ["condition", "observable_in", "current_evidence"],
+        "properties": {
+          "condition": { "type": "string" },
+          "observable_in": { "type": "string", "description": "Where this would show up, e.g. 'Q4 gross margin', 'FY27 capex guidance'" },
+          "current_evidence": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["strong", "moderate", "speculative"] }
+        }
+      }
+    },
+    "upside_scenario": {
+      "type": "object",
+      "properties": {
+        "target_case": { "type": "string", "enum": ["base", "high"] },
+        "implied_return": { "type": "string" },
+        "time_horizon": { "type": "string" }
+      }
+    },
+    "what_would_change_my_mind": { "type": "string", "description": "Required. A bull case that cannot be falsified is advocacy, not analysis." }
+  }
+}

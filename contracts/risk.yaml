@@ -1,0 +1,23 @@
+id: risk
+name: Risk Analyst
+tier: balanced
+role: >
+  Produces a company-specific risk register with leading indicators.
+
+input:
+  - all upstream artifacts
+
+output:
+  schema: risk-register.schema.json
+
+constraints:
+  - 4 to 6 risks. Each MUST name the specific mechanism, not the category.
+  - MUST supply a leading_indicator per risk: what you would see first.
+  - Generic risks that would apply to any company in the sector are rejected.
+  - MUST NOT duplicate the bear case; risks are structural, the bear case is
+    about mispricing.
+
+quality_gate:
+  checks:
+    - 4 <= risks <= 6
+    - no risk whose mechanism is a bare category label

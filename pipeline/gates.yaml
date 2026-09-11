@@ -1,0 +1,87 @@
+version: 2
+
+G1:
+  name: Data Completeness and SEC Traceability
+  owner: orchestrator
+  checks:
+    - all_required_snapshot_fields_present_or_explicitly_null
+    - every_evidence_item_has_fiscal_period
+    - every_evidence_item_has_source_url_or_filing_reference
+    - no_current_quarter_metric_older_than_latest_report
+    - aggregator_only_figures_flagged_for_primary_filing_verification
+  on_fail: rerun_data_agents_with_missing_field_list
+
+G2:
+  name: Forensic Accounting & Earnings Quality Audit
+  owner: forensic-accounting
+  checks:
+    - beneish_m_score_computed_with_all_eight_indices
+    - sloan_accrual_ratio_computed_against_ten_pct_band
+    - adjusted_eps_bridge_reconciles_real_sbc_dilution
+    - working_capital_and_receivables_distortion_audited
+    - net_debt_to_ebitda_audited_against_leverage_ceiling
+  on_fail: rerun_forensic_accounting
+
+G3:
+  name: Valuation Deterministic Reproducibility
+  owner: valuation-modeler
+  checks:
+    - computed_by_equals_calculator
+    - eps_basis_matches_forensic_distortion_instruction
+    - three_cases_each_with_own_assumptions_and_rationale
+    - terminal_growth_rate_strictly_at_or_below_three_percent
+    - calculator_rerun_matches_stored_outputs_exactly
+    - reverse_dcf_implied_growth_rate_computed
+  on_fail: rerun_valuation_modeler
+
+G4:
+  name: Adversarial Red Team Attack
+  owner: bear-adversarial
+  checks:
+    - at_least_four_objections_with_mechanism_and_falsifiable_test
+    - at_least_two_numeric_kill_criteria
+    - at_least_one_objection_rated_material_or_thesis_breaking
+    - bear_agent_ran_isolated_from_bull_agent
+  on_fail: rerun_bear_with_stronger_activist_short_prompt
+  note: >
+    A pass here means the thesis survived a real attack. An empty or polite bear case
+    is an agent failure, never a thesis endorsement.
+
+G5:
+  name: Regulatory, Legal & Geopolitical Sanity
+  owner: regulatory-geopolitical
+  checks:
+    - antitrust_proceedings_and_remedies_quantified
+    - export_control_and_taiwan_strait_exposure_audited
+    - government_contract_appropriations_verified
+  on_fail: rerun_regulatory_geopolitical
+
+G6:
+  name: Citation & Primary Source Verification
+  owner: verifier
+  blocking: true
+  waivable_by: human_only
+  checks:
+    - zero_unsourced_numbers
+    - zero_arithmetic_mismatches
+    - no_cross_artifact_contradictions
+  on_fail: return_unsourced_list_to_writer_and_data_agents
+
+IC_VERDICT:
+  name: Investment Committee Deliberation & Passing Discipline
+  owner: cio-ic
+  checks:
+    - asymmetric_reward_to_risk_ratio_evaluated_against_three_to_one_hurdle
+    - passing_discipline_enforced_for_commodity_traps_or_excessive_leverage
+    - conviction_tier_assigned (High 🔥🔥🔥 / Medium 🔥🔥 / Low 🔥 / Validation / 🚫 Passed)
+    - position_sizing_mandate_includes_kelly_recommendation_and_stop_loss
+
+HUMAN:
+  name: Portfolio Allocation Sign-off
+  owner: human
+  asks:
+    - conviction_confirmation: [High, Medium, Low, Passed]
+    - final_portfolio_position_size
+  guidance: >
+    Conviction tracks margin of safety and value chain bottleneck durability,
+    not retail narrative momentum.

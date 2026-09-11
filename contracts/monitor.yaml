@@ -1,0 +1,38 @@
+id: monitor
+name: Thesis Monitor
+tier: fast
+role: >
+  Scheduled sweep across all live theses. Checks whether invalidation triggers
+  have fired, whether price has left the fair-value range, and whether any
+  thesis has gone stale.
+
+input:
+  - all ThesisRecords with status in [Watchlist, Active]
+  - current market data
+
+output:
+  schema: monitor-alert.schema.json
+
+constraints:
+  - MUST check every trigger against a freshly retrieved figure with a stated
+    fiscal period. Never against memory.
+  - MUST recommend, never act. It does not change status, conviction, or the
+    thesis text.
+  - MUST flag theses whose evidence is older than two reporting cycles as
+    stale, even when no trigger fired.
+  - Escalates to human_review when an invalidation_triggered alert appears.
+
+schedule:
+  - on_earnings_release per ticker
+  - monthly sweep for price_left_fair_value_range
+  - quarterly staleness check
+
+rationale: >
+  This is the highest-leverage agent in the system. Most research setups stop
+  at producing a report; the value of a multi-agent team is re-running the
+  check across thirty theses every quarter, which a human will not do by hand.
+
+quality_gate:
+  checks:
+    - every alert carries the observed figure with fiscal period and source
+    - no alert recommends an action outside the allowed enum

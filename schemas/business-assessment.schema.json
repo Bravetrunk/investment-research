@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "business-assessment.schema.json",
+  "title": "BusinessAssessment",
+  "description": "Moat and business quality. Every claim must point at a number in the snapshot or a passage in the filings extract; unevidenced moat language is rejected at review.",
+  "type": "object",
+  "required": ["ticker", "business_model", "moat", "capital_allocation"],
+  "properties": {
+    "ticker": { "type": "string" },
+    "business_model": {
+      "type": "string",
+      "description": "How the company actually earns money, in concrete terms. Segment names and their share of revenue, not category labels."
+    },
+    "moat": {
+      "type": "object",
+      "required": ["verdict", "sources", "evidence_in_numbers"],
+      "properties": {
+        "verdict": { "type": "string", "enum": ["wide", "narrow", "none", "eroding", "unproven"] },
+        "sources": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["network_effects", "switching_costs", "cost_advantage", "intangible_assets", "efficient_scale", "regulatory", "data_advantage"] }
+        },
+        "evidence_in_numbers": {
+          "type": "array",
+          "description": "A moat that is real shows up in margins, ROIC, or pricing. Cite the metric and the trend.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "metric": { "type": "string" },
+              "trend": { "type": "string" },
+              "evidence_ref": { "type": "string" }
+            }
+          }
+        },
+        "counter_evidence": { "type": "string", "description": "What in the numbers argues against the moat. Required field; write 'none found' only after looking." }
+      }
+    },
+    "earnings_quality": { "type": "string" },
+    "capital_allocation": {
+      "type": "string",
+      "description": "What management has actually done with cash over the last 3 years, and whether it created value."
+    },
+    "management_note": { "type": "string" }
+  }
+}

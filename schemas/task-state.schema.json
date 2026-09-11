@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "task-state.schema.json",
+  "title": "TaskState",
+  "description": "Shared state, one source of truth. The orchestrator owns writes to this; agents read it and append artifacts.",
+  "type": "object",
+  "required": ["run_id", "created_at", "request", "tasks", "artifacts"],
+  "properties": {
+    "run_id": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "request": {
+      "type": "object",
+      "properties": {
+        "mode": { "type": "string", "enum": ["single_stock", "screen", "theme_research", "monitor_run", "quick_question"] },
+        "tickers": { "type": "array", "items": { "type": "string" } },
+        "theme": { "type": "string" },
+        "depth": { "type": "string", "enum": ["quick", "standard", "full"] }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["task_id", "agent", "status", "depends_on"],
+        "properties": {
+          "task_id": { "type": "string" },
+          "agent": { "type": "string" },
+          "ticker": { "type": "string" },
+          "status": { "type": "string", "enum": ["pending", "ready", "running", "blocked", "gate_failed", "done", "skipped"] },
+          "depends_on": { "type": "array", "items": { "type": "string" } },
+          "attempt": { "type": "integer" },
+          "produced_artifact": { "type": "string" },
+          "gate": { "type": "string" }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "description": "artifact_id -> path. Agents pass these ids, never long prose messages.",
+      "additionalProperties": { "type": "string" }
+    },
+    "evidence_store": { "type": "string", "description": "Path to the append-only evidence log for this run." },
+    "gate_log": { "type": "array", "items": { "$ref": "gate-result.schema.json" } },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "gate": { "type": "string" },
+          "approved_by": { "type": "string" },
+          "approved_at": { "type": "string", "format": "date-time" },
+          "conviction_set": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    }
+  }
+}

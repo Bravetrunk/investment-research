@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "monitor-alert.schema.json",
+  "title": "MonitorAlert",
+  "description": "Output of the scheduled monitor run across all live theses. The highest-leverage artifact in the system: it is the work a human cannot do across thirty positions every quarter.",
+  "type": "object",
+  "required": ["run_at", "theses_checked", "alerts"],
+  "properties": {
+    "run_at": { "type": "string", "format": "date-time" },
+    "theses_checked": { "type": "integer" },
+    "alerts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ticker", "alert_type", "trigger", "observed", "recommended_action"],
+        "properties": {
+          "ticker": { "type": "string" },
+          "alert_type": {
+            "type": "string",
+            "enum": ["invalidation_triggered", "approaching_threshold", "price_left_fair_value_range", "thesis_stale", "new_material_event"]
+          },
+          "trigger": { "type": "string" },
+          "observed": { "type": "string", "description": "The actual figure that fired the trigger, with fiscal period and source." },
+          "evidence_ref": { "type": "string" },
+          "recommended_action": {
+            "type": "string",
+            "enum": ["rerun_full_research", "rerun_valuation_only", "human_review", "no_action_logged"],
+            "description": "The monitor recommends; it never changes a thesis status or conviction on its own."
+          }
+        }
+      }
+    },
+    "stale_theses": {
+      "type": "array",
+      "description": "Theses whose evidence is older than two reporting cycles.",
+      "items": { "type": "string" }
+    }
+  }
+}
