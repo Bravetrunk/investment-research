@@ -374,3 +374,134 @@ When running with AI agents, use the institutional slash commands:
 
 👉 **For the complete guide, prompt templates, and step-by-step walkthrough, see:** [`HOW_TO_USE.md`](./HOW_TO_USE.md)
 
+---
+
+## 10. NON-NEGOTIABLE EXECUTION CONTRACT
+
+> [!CAUTION]
+> **This section is MANDATORY and overrides any model-internal optimization heuristic.**
+> The rules below are absolute. Violation of any rule constitutes a failed research engagement.
+
+### 10.1 Execution Integrity Rules
+
+Do NOT optimize for brevity at the expense of execution completeness.
+
+Do NOT skip any mandatory workflow stage because the task appears obvious or simple.
+
+Do NOT infer, fabricate, or substitute missing financial data.
+
+Do NOT replace required agent outputs with internal assumptions.
+
+Do NOT issue the final IC verdict until all mandatory gates have passed.
+
+Every mandatory stage MUST produce and verify its required artifact.
+
+If required data is missing:
+1. Create a `DataRequest`.
+2. Retrieve the missing data using the designated data agent/tool.
+3. Re-run the affected stage.
+4. Do not advance until the dependency is satisfied.
+
+If a required tool, agent, file, or runtime capability is unavailable:
+**STOP** and explicitly report the blocker.
+Do not silently substitute a lower-quality approximation.
+
+---
+
+### 10.2 Mandatory Gate Enforcement (State Machine)
+
+The workflow is a strict sequential state machine. Each gate has explicit PASS/FAIL conditions.
+**If a gate FAILs, the workflow MUST NOT advance past it.**
+
+```text
+G1 DATA ──────────► All 3 data artifacts sourced, dated, and complete
+     │                 FAIL → re-retrieve missing data
+     ▼
+G2 FORENSIC ──────► Beneish M-Score computed, Sloan Accrual verified,
+     │                 SBC dilution walk complete, governance audited
+     │                 FAIL → re-run forensic stage
+     ▼
+G3 CALCULATION ───► calculator.mjs executed with --write AND --verify
+     │                 Deterministic arithmetic reproducibility confirmed
+     │                 FAIL → fix assumptions, re-run calculator
+     ▼
+G4 BEAR ──────────► ≥4 falsifiable bear vectors documented
+     │                 ≥2 numeric kill criteria with explicit thresholds
+     │                 Bear agent ran in ISOLATION (no bull contamination)
+     │                 FAIL → bear case is incomplete, re-run
+     ▼
+G5 REGULATORY ────► Antitrust, export controls, patent risks audited
+     │                 Sovereign/geopolitical exposure documented
+     │                 FAIL → re-run regulatory assessment
+     ▼
+G6 CITATION ──────► ZERO unsourced numbers in final memo
+     │                 Every data point traces to primary SEC filing,
+     │                 audited report, or verifiable transcript
+     │                 FAIL → identify and source all unverified claims
+     ▼
+IC VERDICT ───────► 3:1 Asymmetric R/R hurdle evaluated
+                     Passing Discipline applied (reject commodity traps,
+                     multiple derating, excessive leverage)
+                     Conviction tier assigned or formal PASS issued
+                     FAIL → cannot issue verdict, report gaps
+```
+
+---
+
+### 10.3 Required Artifact Contract
+
+Each workflow stage MUST produce its designated artifact file in `~/Desktop/<TICKER>/`.
+**A stage is NOT complete until its artifact exists and is verified.**
+
+| Stage | Required Artifact(s) | Completeness Check |
+| :--- | :--- | :--- |
+| Data Ingestion | `financial-snapshot.json`, `filings-extract.json`, `news-timeline.json` | All 3 files present, sourced, dated |
+| Forensic Audit | `forensic-report.json` | M-Score, Sloan, SBC fields populated |
+| ESG/Governance | `esg-report.json` | Insider, board, debt maturity fields populated |
+| Macro Alignment | `macro-thematic-assessment.json` | Master Thesis mapping complete |
+| Sector Deep Dive | `sector-deep-dive.json` | BOM, unit economics, backlog documented |
+| Business/Moat | `business-assessment.json` | Porter's 5, ROIC vs WACC documented |
+| Valuation Model | `valuation-model.json` | DCF, Reverse DCF, SOTP, sensitivities computed |
+| Bull Case | `bull-case.json` | Secular drivers, operating leverage documented |
+| Bear Case | `bear-case.json` | ≥4 vectors, ≥2 kill criteria with thresholds |
+| Regulatory | `regulatory-geopolitical-assessment.json` | Export, antitrust, patent risks documented |
+| Risk Register | `risk-register.json` | Stress test, leverage ceiling, Kelly sizing |
+| Thesis Record | `thesis-record.json` | Invalidation triggers defined |
+| IC Verdict | `ic-verdict.json` | Verdict, conviction tier, R/R ratio |
+| Final Memo | `RESEARCH.docx` / `RESEARCH.md` | 8-section memo complete |
+| Financial Model | `QUANT_ANALYSIS.xlsx` | 6-tab workbook compiled |
+
+> [!WARNING]
+> **"Thinking it through internally" does NOT count as producing an artifact.**
+> If the artifact file does not exist on disk, the stage has not been executed.
+
+---
+
+### 10.4 Mandatory Final Response Schema
+
+Every completed research engagement MUST include a final response containing ALL of the following sections, in order:
+
+1. **Execution Status**: Overall completion state (COMPLETE / PARTIAL / BLOCKED)
+2. **Data Completeness**: Which data sources were retrieved and any gaps
+3. **Gate Status (G1–G6 + IC)**: Explicit PASS/FAIL for each gate
+4. **Key Findings**: Core thesis summary in 3–5 bullet points
+5. **Valuation**: Base / Bull / Bear fair values, current price, implied upside/downside
+6. **Bull Case**: Top 3–5 secular drivers and catalysts
+7. **Bear Case**: All ≥4 falsifiable vectors and ≥2 kill criteria
+8. **Kill Criteria**: Explicit numeric thresholds that would invalidate the thesis
+9. **Final IC Verdict**: `APPROVED_LONG` / `APPROVED_SHORT` / `PASSED` with conviction tier
+10. **Artifacts Created**: List of all files written to `~/Desktop/<TICKER>/`
+11. **Limitations / Unresolved Items**: Any data gaps, unresolved blockers, or caveats
+
+---
+
+### 10.5 Anti-Shortcut Rules
+
+> [!IMPORTANT]
+> **The final response may be concise ONLY AFTER all required work has been completed.**
+> **Do not confuse concise reporting with incomplete execution.**
+
+- A short answer that skipped stages is **NOT** a concise answer — it is a **failed** answer.
+- Completing all gates and artifacts, then summarizing findings briefly, is acceptable.
+- Skipping gates and artifacts to produce a quick summary is **never** acceptable.
+- When in doubt, **over-execute rather than under-execute**.
